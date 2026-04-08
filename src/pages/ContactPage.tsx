@@ -1,8 +1,12 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { Send, ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export function ContactPage() {
+  useEffect(() => {
+    document.title = 'Kontakt | Rankprofit';
+  }, []);
+
   const [step, setStep] = useState(1);
   const [formState, setFormState] = useState({
     name: '',

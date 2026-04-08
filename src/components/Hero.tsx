@@ -1,19 +1,25 @@
-import { motion } from 'motion/react';
+import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
 import { ArrowRight, TrendingUp } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Magnetic } from './Magnetic';
 import { Link } from 'react-router-dom';
 
 export function Hero() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  
+  const rawMouseX = useMotionValue(0);
+  const rawMouseY = useMotionValue(0);
+  const springX = useSpring(rawMouseX, { damping: 30, stiffness: 100, mass: 1 });
+  const springY = useSpring(rawMouseY, { damping: 30, stiffness: 100, mass: 1 });
+  const spotlightX = useTransform(springX, (x) => (x - window.innerWidth / 2) * 0.05);
+  const spotlightY = useTransform(springY, (y) => (y - window.innerHeight / 2) * 0.05);
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+      rawMouseX.set(e.clientX);
+      rawMouseY.set(e.clientY);
     };
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [rawMouseX, rawMouseY]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -37,13 +43,9 @@ export function Hero() {
       {/* Background Elements Container with Bottom Fade Mask */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none [mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]">
         {/* Interactive Spotlight Background */}
-        <motion.div 
+        <motion.div
           className="absolute w-[800px] h-[800px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none mix-blend-screen"
-          animate={{
-            x: (mousePosition.x - window.innerWidth / 2) * 0.05,
-            y: (mousePosition.y - window.innerHeight / 2) * 0.05,
-          }}
-          transition={{ type: "tween", ease: "backOut", duration: 2 }}
+          style={{ x: spotlightX, y: spotlightY }}
         />
 
         {/* Animated Grid Background */}
