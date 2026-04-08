@@ -46,6 +46,13 @@ const services = [
 function ServiceCard({ service, index }: { service: any, index: number, key?: React.Key }) {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
+  const spotlightBg = useSpring(
+    useTransform(
+      [mouseX, mouseY],
+      ([x, y]) => `radial-gradient(600px circle at ${x}px ${y}px, rgba(16, 185, 129, 0.05), transparent 40%)`
+    ),
+    { stiffness: 500, damping: 50 }
+  );
 
   function handleMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
     const { left, top } = currentTarget.getBoundingClientRect();
@@ -71,15 +78,7 @@ function ServiceCard({ service, index }: { service: any, index: number, key?: Re
         {/* Spotlight Effect */}
         <motion.div
           className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 transition duration-300 group-hover:opacity-100"
-          style={{
-            background: useSpring(
-              useTransform(
-                [mouseX, mouseY],
-                ([x, y]) => `radial-gradient(600px circle at ${x}px ${y}px, rgba(16, 185, 129, 0.05), transparent 40%)`
-              ),
-              { stiffness: 500, damping: 50 }
-            ),
-          }}
+          style={{ background: spotlightBg }}
         />
 
         {/* Decorative background element */}

@@ -1,6 +1,5 @@
-import { motion, useScroll, useTransform } from 'motion/react';
+import { motion } from 'motion/react';
 import { ArrowUpRight } from 'lucide-react';
-import React, { useRef } from 'react';
 import { SectionTitle } from './SectionReveal';
 
 const projects = [
@@ -34,38 +33,27 @@ const projects = [
   }
 ];
 
-function ProjectCard({ project, index }: { project: any, index: number, key?: React.Key }) {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"]
-  });
-  
-  // Parallax effect for the image
-  const y = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
-
+function ProjectCard({ project, index }: { project: any, index: number, key?: string | number }) {
   return (
     <motion.a
       href={project.link}
       target="_blank"
       rel="noopener noreferrer"
-      ref={ref}
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.7, delay: index * 0.1, ease: "easeOut" }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
       className="group cursor-pointer block"
     >
-      <motion.div 
+      <motion.div
         whileHover={{ y: -8 }}
         transition={{ type: "spring", stiffness: 400, damping: 30 }}
       >
         <div className="relative overflow-hidden rounded-3xl aspect-[4/3] mb-6 bg-slate-900 border border-slate-800 shadow-sm group-hover:shadow-xl group-hover:border-emerald-500/30 transition-all duration-500">
           <div className={`absolute inset-0 bg-gradient-to-br ${project.color} z-10 mix-blend-multiply opacity-50 group-hover:opacity-30 transition-opacity duration-500`} />
-          
-          <motion.img 
-            style={{ y, scale: 1.1 }} // Scale up slightly to allow room for parallax
-            src={project.image} 
+
+          <img
+            src={project.image}
             alt={project.title}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             referrerPolicy="no-referrer"

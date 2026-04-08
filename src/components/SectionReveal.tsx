@@ -1,5 +1,5 @@
-import { motion, useScroll, useSpring, useTransform } from 'motion/react';
-import { ReactNode, useRef } from 'react';
+import { motion } from 'motion/react';
+import { ReactNode } from 'react';
 
 interface SectionRevealProps {
   children: ReactNode;
@@ -19,25 +19,21 @@ export function SectionReveal({ children, className = "", delay = 0, direction =
   return (
     <motion.div
       className={className}
-      initial={{ 
-        opacity: 0, 
-        y: initialPos[direction].y, 
+      initial={{
+        opacity: 0,
+        y: initialPos[direction].y,
         x: initialPos[direction].x,
-        filter: 'blur(10px)'
       }}
-      whileInView={{ 
-        opacity: 1, 
-        y: 0, 
+      whileInView={{
+        opacity: 1,
+        y: 0,
         x: 0,
-        filter: 'blur(0px)'
       }}
       viewport={{ once: true, margin: "-100px" }}
-      transition={{ 
-        duration: 1, 
-        delay, 
-        type: "spring",
-        stiffness: 50,
-        damping: 20
+      transition={{
+        duration: 0.6,
+        delay,
+        ease: "easeOut",
       }}
     >
       {children}
