@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+
+  --color-background: #020617;
+  --color-surface: #0f172a;
+  --color-surface-hover: #1e293b;
+  --color-border: #1e293b;
+
+  --color-primary: #f8fafc;
+  --color-secondary: #94a3b8;
+
+  --color-accent-1: #10b981;
+  --color-accent-2: #14b8a6;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.glass-panel {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(30, 41, 59, 1);
+}
+
+.text-gradient-accent {
+  background: linear-gradient(135deg, var(--color-accent-1), var(--color-accent-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bg-gradient-glow {
+  background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.1) 0%, rgba(0, 0, 0, 0) 50%);
+}
+
+.section-shell {
+  @apply py-24 md:py-28 relative;
+}
+
+.section-container {
+  @apply max-w-7xl mx-auto px-6 md:px-12 relative z-10;
+}
+
+.section-kicker {
+  @apply inline-block px-4 py-2 bg-slate-900 border border-slate-800 rounded-full text-slate-300 text-xs md:text-sm tracking-wide;
+}
+
+.section-title {
+  @apply text-3xl md:text-5xl font-bold text-white mt-4;
+}
+
+.card {
+  @apply bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-sm transition-colors duration-300;
+}
+
+.card:hover {
+  @apply border-emerald-500/40;
+}

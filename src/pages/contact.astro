@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactForm from '../components/ContactForm.astro';
+---
+
+<BaseLayout
+  title="Kontakt | Rankprofit"
+  description="Stellen Sie Ihre Projektanfrage an Rankprofit. Wir melden uns mit einer klaren Empfehlung für SEO, Website oder Performance Marketing."
+  pathname="/contact"
+>
+  <section class="pt-36 pb-24 section-container max-w-4xl">
+    <header>
+      <p class="section-kicker">Kontakt</p>
+      <h1 class="section-title">Lassen Sie uns über Ihr Projekt sprechen.</h1>
+      <p class="text-slate-400 text-lg mt-6 max-w-3xl">Beschreiben Sie kurz Ihre Ziele, Ihren Zeitrahmen und Budgetrahmen. Wir antworten innerhalb von 24 Stunden.</p>
+    </header>
+    <ContactForm />
+  </section>
+</BaseLayout>
