@@ -1,5 +1,5 @@
 'use client'
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import { SectionTitle } from './SectionReveal';
 
 const steps = [
@@ -31,67 +31,91 @@ const steps = [
 
 export function Workflow() {
   const containerRef = useRef<HTMLElement>(null);
-  const lineRef = useRef<HTMLDivElement>(null);
+  const lineFillRef = useRef<HTMLDivElement>(null);
+  const lineTrackRef = useRef<HTMLDivElement>(null);
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const numberNodeRefs = useRef<(HTMLDivElement | null)[]>([]);
   const rafRef = useRef<number | null>(null);
-  const [lineScaleY, setLineScaleY] = useState(0);
 
-  // Scroll-driven vertical line fill
   useEffect(() => {
+    // Apply transition to number nodes once on mount
+    numberNodeRefs.current.forEach((el) => {
+      if (el) el.style.transition = 'border-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease, background-color 0.4s ease';
+    });
+
     const handleScroll = () => {
       if (rafRef.current) return;
       rafRef.current = requestAnimationFrame(() => {
-        if (!containerRef.current) { rafRef.current = null; return; }
+        if (!containerRef.current || !lineFillRef.current || !lineTrackRef.current) {
+          rafRef.current = null;
+          return;
+        }
+
+        // Line fill
         const rect = containerRef.current.getBoundingClientRect();
-        const viewportHeight = window.innerHeight;
-        // Start filling when top of section hits center, finish when bottom hits center
-        const start = rect.top - viewportHeight * 0.5;
-        const end = rect.bottom - viewportHeight * 0.5;
+        const vh = window.innerHeight;
+        const start = rect.top - vh * 0.5;
+        const end = rect.bottom - vh * 0.5;
         const progress = Math.min(1, Math.max(0, -start / (end - start)));
-        setLineScaleY(progress);
+        lineFillRef.current.style.transform = `scaleY(${progress})`;
+
+        // Number node coloring
+        const trackRect = lineTrackRef.current.getBoundingClientRect();
+        const fillBottom = trackRect.top + progress * trackRect.height;
+
+        numberNodeRefs.current.forEach((nodeEl) => {
+          if (!nodeEl) return;
+          const nodeRect = nodeEl.getBoundingClientRect();
+          const nodeCenter = nodeRect.top + nodeRect.height / 2;
+          if (fillBottom >= nodeCenter) {
+            nodeEl.style.borderColor = 'rgba(16,185,129,0.5)';
+            nodeEl.style.color = '#10b981';
+            nodeEl.style.boxShadow = '0 8px 30px rgba(16,185,129,0.15)';
+            nodeEl.style.backgroundColor = 'rgba(16,185,129,0.08)';
+          } else {
+            nodeEl.style.borderColor = 'rgb(30,41,59)';
+            nodeEl.style.color = 'rgb(100,116,139)';
+            nodeEl.style.boxShadow = '';
+            nodeEl.style.backgroundColor = 'rgb(15,23,42)';
+          }
+        });
+
         rafRef.current = null;
       });
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // run once on mount
+    handleScroll();
     return () => {
       window.removeEventListener('scroll', handleScroll);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, []);
 
-  // IntersectionObserver for step slide-in
+  // Step slide-in on scroll
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
-
     stepRefs.current.forEach((el, index) => {
       if (!el) return;
-      // Set initial hidden state
       el.style.opacity = '0';
       el.style.transform = 'translateX(-32px)';
       el.style.transition = `opacity 0.6s ease ${index * 80}ms, transform 0.6s ease ${index * 80}ms`;
 
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            el.style.opacity = '1';
-            el.style.transform = 'translateX(0)';
-            observer.disconnect();
-          }
-        },
-        { threshold: 0.3 }
-      );
+      const observer = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          el.style.opacity = '1';
+          el.style.transform = 'translateX(0)';
+          observer.disconnect();
+        }
+      }, { threshold: 0.3 });
       observer.observe(el);
       observers.push(observer);
     });
-
     return () => observers.forEach(o => o.disconnect());
   }, []);
 
   return (
     <section id="workflow" ref={containerRef} className="py-32 relative">
-      {/* Background decoration */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[1px] bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent opacity-50" />
 
       <div className="max-w-5xl mx-auto px-6 md:px-12">
@@ -101,16 +125,15 @@ export function Workflow() {
         />
 
         <div className="relative mt-20">
-          {/* Connecting line track */}
-          <div className="absolute top-8 left-[31px] md:left-[39px] bottom-8 w-[2px] bg-slate-800 z-0">
-            {/* Animated fill */}
+          {/* Line track */}
+          <div
+            ref={lineTrackRef}
+            className="absolute top-8 left-[31px] md:left-[39px] bottom-8 w-[2px] bg-slate-800 z-0"
+          >
             <div
-              ref={lineRef}
+              ref={lineFillRef}
               className="w-full h-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)] origin-top"
-              style={{
-                transform: `scaleY(${lineScaleY})`,
-                transition: 'transform 80ms linear',
-              }}
+              style={{ transform: 'scaleY(0)' }}
             />
           </div>
 
@@ -123,8 +146,10 @@ export function Workflow() {
               >
                 {/* Number Node */}
                 <div className="flex-shrink-0 relative">
-                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center font-display font-bold text-xl md:text-2xl text-slate-500 shadow-sm group-hover:border-emerald-500/30 group-hover:text-emerald-500 group-hover:shadow-[0_8px_30px_rgba(16,185,129,0.12)] transition-all duration-500 relative overflow-hidden z-10">
-                    <div className="absolute inset-0 bg-emerald-500/0 group-hover:bg-emerald-500/10 transition-colors duration-500" />
+                  <div
+                    ref={el => { numberNodeRefs.current[index] = el; }}
+                    className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center font-display font-bold text-xl md:text-2xl text-slate-500 shadow-sm relative overflow-hidden z-10"
+                  >
                     <span className="relative z-10">{step.number}</span>
                   </div>
                 </div>
