@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export function CTA() {
   return (
-    <section id="contact" className="py-40 relative">
+    <section id="contact" className="py-40 relative overflow-hidden">
       {/* Background Glow */}
       <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
         <div className="absolute w-[1000px] h-[1000px] bg-emerald-500/10 rounded-full blur-[150px] mix-blend-screen" />

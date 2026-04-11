@@ -3,7 +3,7 @@ import { Check, TrendingUp, Award, PieChart, Users, Monitor } from 'lucide-react
 
 export function Benefits() {
   return (
-    <section id="benefits" className="py-32 relative">
+    <section id="benefits" className="py-32 relative overflow-hidden">
       {/* Subtle Background Glows */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute w-[800px] h-[800px] rounded-full bg-emerald-500/10 blur-[120px] top-[-20%] left-[-10%]" />
