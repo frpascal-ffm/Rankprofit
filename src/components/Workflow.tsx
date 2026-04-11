@@ -1,5 +1,6 @@
 'use client'
-import { useRef, useEffect } from 'react';
+import { useRef, useState } from 'react';
+import { motion, useScroll, useSpring, useInView, useMotionValueEvent } from 'motion/react';
 import { SectionTitle } from './SectionReveal';
 
 const steps = [
@@ -29,94 +30,91 @@ const steps = [
   }
 ];
 
+interface StepItemProps {
+  step: typeof steps[0];
+  index: number;
+  active: boolean;
+}
+
+function StepItem({ step, index, active }: StepItemProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.35 });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, x: -48, filter: 'blur(6px)' }}
+      animate={isInView ? { opacity: 1, x: 0, filter: 'blur(0px)' } : {}}
+      transition={{
+        duration: 0.75,
+        delay: index * 0.12,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className="relative z-10 flex flex-row gap-6 md:gap-12 items-start group"
+    >
+      {/* Number Node */}
+      <div className="flex-shrink-0 relative z-10">
+        <motion.div
+          animate={active ? {
+            borderColor: 'rgba(16,185,129,0.5)',
+            color: '#10b981',
+            boxShadow: '0 0 28px rgba(16,185,129,0.25), 0 0 8px rgba(16,185,129,0.15)',
+            backgroundColor: 'rgb(15,23,42)',
+          } : {
+            borderColor: 'rgb(30,41,59)',
+            color: 'rgb(100,116,139)',
+            boxShadow: '0 0 0px rgba(16,185,129,0)',
+            backgroundColor: 'rgb(15,23,42)',
+          }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+          className="w-16 h-16 md:w-20 md:h-20 rounded-2xl border-2 flex items-center justify-center font-display font-bold text-xl md:text-2xl shadow-sm"
+        >
+          {step.number}
+        </motion.div>
+      </div>
+
+      {/* Content */}
+      <div className="flex flex-col pt-1 md:pt-3">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.55, delay: index * 0.12 + 0.22, ease: 'easeOut' }}
+          className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium mb-4 w-fit"
+        >
+          {step.badge}
+        </motion.div>
+        <h3 className="text-2xl md:text-3xl font-display font-semibold mb-3 text-white group-hover:text-emerald-400 transition-colors duration-300">
+          {step.title}
+        </h3>
+        <p className="text-slate-400 text-base md:text-lg leading-relaxed max-w-2xl">
+          {step.description}
+        </p>
+      </div>
+    </motion.div>
+  );
+}
+
 export function Workflow() {
   const containerRef = useRef<HTMLElement>(null);
-  const lineFillRef = useRef<HTMLDivElement>(null);
-  const lineTrackRef = useRef<HTMLDivElement>(null);
-  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const numberNodeRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const rafRef = useRef<number | null>(null);
+  const [activeNodes, setActiveNodes] = useState<boolean[]>([false, false, false, false]);
 
-  useEffect(() => {
-    // Apply transition to number nodes once on mount
-    numberNodeRefs.current.forEach((el) => {
-      if (el) el.style.transition = 'border-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease, background-color 0.4s ease, text-shadow 0.4s ease';
-    });
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start 65%', 'end 65%'],
+  });
 
-    const handleScroll = () => {
-      if (rafRef.current) return;
-      rafRef.current = requestAnimationFrame(() => {
-        if (!containerRef.current || !lineFillRef.current || !lineTrackRef.current) {
-          rafRef.current = null;
-          return;
-        }
+  const springProgress = useSpring(scrollYProgress, {
+    stiffness: 60,
+    damping: 20,
+    restDelta: 0.001,
+  });
 
-        // Line fill
-        const rect = containerRef.current.getBoundingClientRect();
-        const vh = window.innerHeight;
-        const start = rect.top - vh * 0.5;
-        const end = rect.bottom - vh * 0.5;
-        const progress = Math.min(1, Math.max(0, -start / (end - start)));
-        lineFillRef.current.style.transform = `scaleY(${progress})`;
-
-        // Number node coloring
-        const trackRect = lineTrackRef.current.getBoundingClientRect();
-        const fillBottom = trackRect.top + progress * trackRect.height;
-
-        numberNodeRefs.current.forEach((nodeEl) => {
-          if (!nodeEl) return;
-          const nodeRect = nodeEl.getBoundingClientRect();
-          const nodeCenter = nodeRect.top + nodeRect.height / 2;
-          if (fillBottom >= nodeCenter) {
-            nodeEl.style.borderColor = 'rgba(16,185,129,0.5)';
-            nodeEl.style.color = '#10b981';
-            nodeEl.style.boxShadow = '0 0 24px rgba(16,185,129,0.2)';
-            nodeEl.style.backgroundColor = 'rgb(15,23,42)';
-          } else {
-            nodeEl.style.borderColor = 'rgb(30,41,59)';
-            nodeEl.style.color = 'rgb(100,116,139)';
-            nodeEl.style.boxShadow = '';
-            nodeEl.style.backgroundColor = 'rgb(15,23,42)';
-          }
-        });
-
-        rafRef.current = null;
-      });
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
-
-  // Step slide-in on scroll
-  useEffect(() => {
-    const observers: IntersectionObserver[] = [];
-    stepRefs.current.forEach((el, index) => {
-      if (!el) return;
-      el.style.opacity = '0';
-      el.style.transform = 'translateX(-32px)';
-      el.style.transition = `opacity 0.6s ease ${index * 80}ms, transform 0.6s ease ${index * 80}ms`;
-
-      const observer = new IntersectionObserver(([entry]) => {
-        if (entry.isIntersecting) {
-          el.style.opacity = '1';
-          el.style.transform = 'translateX(0)';
-          observer.disconnect();
-        }
-      }, { threshold: 0.3 });
-      observer.observe(el);
-      observers.push(observer);
-    });
-    return () => observers.forEach(o => o.disconnect());
-  }, []);
+  useMotionValueEvent(springProgress, 'change', (v) => {
+    setActiveNodes(steps.map((_, i) => v >= (i + 0.5) / steps.length));
+  });
 
   return (
     <section id="workflow" ref={containerRef} className="py-32 relative blend-section">
-
       <div className="max-w-5xl mx-auto px-6 md:px-12">
         <SectionTitle
           title="So arbeiten wir zusammen"
@@ -125,47 +123,21 @@ export function Workflow() {
 
         <div className="relative mt-20 isolate">
           {/* Line track */}
-          <div
-            ref={lineTrackRef}
-            className="absolute top-8 left-[31px] md:left-[39px] bottom-8 w-[2px] bg-slate-800 -z-10"
-          >
-            <div
-              ref={lineFillRef}
-              className="w-full h-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)] origin-top"
-              style={{ transform: 'scaleY(0)' }}
+          <div className="absolute top-8 left-[31px] md:left-[39px] bottom-8 w-[2px] bg-slate-800 -z-10">
+            <motion.div
+              style={{ scaleY: springProgress, transformOrigin: 'top' }}
+              className="w-full h-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]"
             />
           </div>
 
           <div className="flex flex-col gap-16">
             {steps.map((step, index) => (
-              <div
+              <StepItem
                 key={index}
-                ref={el => { stepRefs.current[index] = el; }}
-                className="relative z-10 flex flex-row gap-6 md:gap-12 items-start group"
-              >
-                {/* Number Node */}
-                <div className="flex-shrink-0 relative z-10">
-                  <div
-                    ref={el => { numberNodeRefs.current[index] = el; }}
-                    className="w-16 h-16 md:w-20 md:h-20 rounded-2xl border-2 flex items-center justify-center font-display font-bold text-xl md:text-2xl shadow-sm"
-                  >
-                    {step.number}
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="flex flex-col pt-1 md:pt-3">
-                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium mb-4 w-fit">
-                    {step.badge}
-                  </div>
-                  <h3 className="text-2xl md:text-3xl font-display font-semibold mb-3 text-white group-hover:text-emerald-400 transition-colors duration-300">
-                    {step.title}
-                  </h3>
-                  <p className="text-slate-400 text-base md:text-lg leading-relaxed max-w-2xl">
-                    {step.description}
-                  </p>
-                </div>
-              </div>
+                step={step}
+                index={index}
+                active={activeNodes[index]}
+              />
             ))}
           </div>
         </div>

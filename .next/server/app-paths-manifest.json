@@ -1,4 +1,8 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
+  "/leistungen/webdesign/page": "app/leistungen/webdesign/page.js",
+  "/leistungen/ki-automatisierung/page": "app/leistungen/ki-automatisierung/page.js",
+  "/leistungen/seo/page": "app/leistungen/seo/page.js",
   "/page": "app/page.js",
-  "/leistungen/webdesign/page": "app/leistungen/webdesign/page.js"
+  "/leistungen/google-ads/page": "app/leistungen/google-ads/page.js"
 }
