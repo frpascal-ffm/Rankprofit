@@ -1,51 +1,20 @@
-# Rankprofit – Astro Migration
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
 
-Dieses Projekt wurde von React/Vite auf **Astro** migriert mit Fokus auf:
+# Run and deploy your AI Studio app
 
-- statische Auslieferung
-- minimale JavaScript-Menge
-- SEO-freundliche HTML-Struktur
+This contains everything you need to run your app locally.
 
-## Projektstruktur
+View your app in AI Studio: https://ai.studio/apps/119aa47a-61fa-423f-8403-3891d56cd5e8
 
-```text
-src/
-  components/
-    Benefits.astro
-    CTA.astro
-    ContactForm.astro
-    Footer.astro
-    Hero.astro
-    Navbar.astro
-    Portfolio.astro
-    Services.astro
-    Workflow.astro
-  layouts/
-    BaseLayout.astro
-  pages/
-    index.astro
-    contact.astro
-  styles.css
-```
+## Run Locally
 
-## Entwicklung
+**Prerequisites:**  Node.js
 
-```bash
-npm install
-npm run dev
-```
 
-## Build
-
-```bash
-npm run build
-npm run preview
-```
-
-## SEO-Optimierungen
-
-- semantische Struktur (`header`, `main`, `section`, `article`, `footer`)
-- eindeutige `h1` pro Seite
-- `title`, `meta description`, Open Graph, Canonical
-- JSON-LD Organisation-Schema im Basislayout
-- Sitemap via `@astrojs/sitemap`
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`
