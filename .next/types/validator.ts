@@ -45,6 +45,60 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
   type __Unused = __Check
 }
 
+// Validate ../../src/app/leistungen/google-ads/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/leistungen/google-ads">> = Specific
+  const handler = {} as typeof import("../../src/app/leistungen/google-ads/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/leistungen/ki-automatisierung/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/leistungen/ki-automatisierung">> = Specific
+  const handler = {} as typeof import("../../src/app/leistungen/ki-automatisierung/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/leistungen/mobile-apps/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/leistungen/mobile-apps">> = Specific
+  const handler = {} as typeof import("../../src/app/leistungen/mobile-apps/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/leistungen/seo/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/leistungen/seo">> = Specific
+  const handler = {} as typeof import("../../src/app/leistungen/seo/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/leistungen/webanwendungen/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/leistungen/webanwendungen">> = Specific
+  const handler = {} as typeof import("../../src/app/leistungen/webanwendungen/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/leistungen/webdesign/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/leistungen/webdesign">> = Specific
+  const handler = {} as typeof import("../../src/app/leistungen/webdesign/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../src/app/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/">> = Specific

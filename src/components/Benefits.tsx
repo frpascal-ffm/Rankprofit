@@ -209,7 +209,7 @@ export function Benefits() {
   }, []);
 
   return (
-    <section id="benefits" className="py-32 relative overflow-hidden" ref={sectionRef}>
+    <section id="benefits" className="py-32 relative overflow-hidden blend-section" ref={sectionRef}>
       {/* Subtle Background Glows */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute w-[800px] h-[800px] rounded-full bg-emerald-500/10 blur-[120px] top-[-20%] left-[-10%]" />

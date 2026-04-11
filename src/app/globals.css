@@ -57,6 +57,20 @@ h1, h2, h3, h4, h5, h6 {
   background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.1) 0%, rgba(0, 0, 0, 0) 50%);
 }
 
+/* Hero line animations */
+@keyframes hero-dashflow {
+  from { stroke-dashoffset: 2200; }
+  to   { stroke-dashoffset: 0; }
+}
+.hero-line-1 {
+  stroke-dasharray: 1400 800;
+  animation: hero-dashflow 8s linear infinite;
+}
+.hero-line-2 {
+  stroke-dasharray: 1400 800;
+  animation: hero-dashflow 12s linear infinite 2s;
+}
+
 /* Benefits animations */
 @keyframes benefits-draw-path {
   0%   { stroke-dashoffset: 600; }
@@ -86,4 +100,24 @@ h1, h2, h3, h4, h5, h6 {
 @keyframes benefits-ring {
   0%   { transform: scale(1); opacity: 0.8; }
   100% { transform: scale(2); opacity: 0;   }
+}
+
+/* Section edge blending — fades section top & bottom into the page background */
+.blend-section::before,
+.blend-section::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 8rem;
+  pointer-events: none;
+  z-index: 50;
+}
+.blend-section::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--color-background) 0%, transparent 100%);
+}
+.blend-section::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--color-background) 0%, transparent 100%);
 }

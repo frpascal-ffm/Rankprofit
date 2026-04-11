@@ -115,8 +115,7 @@ export function Workflow() {
   }, []);
 
   return (
-    <section id="workflow" ref={containerRef} className="py-32 relative">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[1px] bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent opacity-50" />
+    <section id="workflow" ref={containerRef} className="py-32 relative blend-section">
 
       <div className="max-w-5xl mx-auto px-6 md:px-12">
         <SectionTitle

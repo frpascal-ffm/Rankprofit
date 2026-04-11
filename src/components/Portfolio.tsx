@@ -81,7 +81,7 @@ function ProjectCard({ project, index }: { project: any, index: number, key?: Re
 
 export function Portfolio() {
   return (
-    <section id="portfolio" className="py-32 relative">
+    <section id="portfolio" className="py-32 relative blend-section">
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-6">
           <SectionTitle

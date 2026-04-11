@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export function CTA() {
   return (
-    <section id="contact" className="py-40 relative overflow-hidden">
+    <section id="contact" className="py-40 relative overflow-hidden blend-section">
       {/* Background Glow */}
       <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
         <div className="absolute w-[1000px] h-[1000px] bg-emerald-500/10 rounded-full blur-[150px] mix-blend-screen" />
@@ -39,7 +39,7 @@ export function CTA() {
             >
               <div className="absolute inset-0 bg-emerald-400 scale-0 rounded-full group-hover:scale-150 transition-transform duration-500 ease-out origin-center" />
               <span className="relative z-10 flex items-center gap-3">
-                Projekt starten
+                Kostenlosen Entwurf sichern
                 <div className="w-8 h-8 bg-slate-950/10 text-slate-950 rounded-full flex items-center justify-center group-hover:bg-slate-950 group-hover:text-emerald-500 transition-colors duration-300">
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300" />
                 </div>

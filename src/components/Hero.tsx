@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-20 text-white">
+    <section className="relative min-h-screen flex items-center justify-center pt-20 text-white blend-section">
       {/* Background Elements Container with Bottom Fade Mask */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none [mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]">
         {/* Static Spotlight Background */}
@@ -21,15 +21,17 @@ export function Hero() {
         </div>
 
         {/* Chart Lines in Background */}
-        <div className="absolute inset-0 opacity-30">
+        <div className="absolute inset-0 opacity-30 [mask-image:linear-gradient(to_right,transparent_0%,black_12%,black_88%,transparent_100%)]">
           <svg className="absolute w-full h-full" preserveAspectRatio="none" viewBox="0 0 1000 1000">
             <path
+              className="hero-line-1"
               d="M0,800 Q200,700 400,800 T800,600 T1000,400"
               fill="none"
               stroke="url(#emerald-gradient)"
               strokeWidth="4"
             />
             <path
+              className="hero-line-2"
               d="M0,900 Q300,850 500,700 T900,500 T1000,200"
               fill="none"
               stroke="url(#emerald-gradient-2)"
@@ -58,11 +60,11 @@ export function Hero() {
         </div>
 
         <div className="mb-8">
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-display font-bold tracking-tight leading-[1.1] flex flex-col items-center justify-center">
-            <span className="block text-white">
+          <h1 className="font-display font-bold tracking-tight leading-[1.1] flex flex-col items-center justify-center text-[clamp(2.2rem,8vw,9rem)]">
+            <span className="whitespace-nowrap text-white">
               Wir ranken.
             </span>
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500">
+            <span className="whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500">
               Sie profitieren.
             </span>
           </h1>
