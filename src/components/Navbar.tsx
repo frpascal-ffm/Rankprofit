@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
 import { Menu, X, Hexagon } from 'lucide-react';
 import { Magnetic } from './Magnetic';
 import Link from 'next/link';
@@ -24,7 +23,7 @@ export function Navbar() {
   ];
 
   return (
-    <header 
+    <header
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
         scrolled ? 'py-4 glass-panel border-b border-slate-800 bg-slate-950/80' : 'py-6 bg-transparent'
       }`}
@@ -41,7 +40,7 @@ export function Navbar() {
           {navLinks.map((link) => (
             <div key={link.name}>
               <Magnetic strength={0.1}>
-                <a 
+                <a
                   href={link.href}
                   className={`text-sm font-medium transition-colors px-2 py-1 text-slate-300 hover:text-white`}
                 >
@@ -54,8 +53,8 @@ export function Navbar() {
 
         <div className="hidden md:block">
           <Magnetic strength={0.2}>
-            <Link 
-              href="/contact" 
+            <Link
+              href="/contact"
               className={`px-5 py-2.5 text-sm font-medium rounded-full transition-colors bg-emerald-500 text-slate-950 hover:bg-emerald-400`}
             >
               Kontakt
@@ -63,7 +62,7 @@ export function Navbar() {
           </Magnetic>
         </div>
 
-        <button 
+        <button
           className={`md:hidden transition-colors text-slate-300 hover:text-white`}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
@@ -73,14 +72,10 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="absolute top-full left-0 w-full border-b border-slate-800 py-4 px-6 flex flex-col gap-4 md:hidden bg-slate-950/98 backdrop-blur-xl shadow-2xl"
-        >
+        <div className="absolute top-full left-0 w-full border-b border-slate-800 py-4 px-6 flex flex-col gap-4 md:hidden bg-slate-950/98 backdrop-blur-xl shadow-2xl">
           {navLinks.map((link) => (
-            <a 
-              key={link.name} 
+            <a
+              key={link.name}
               href={link.href}
               className="text-sm font-medium text-slate-300 hover:text-white"
               onClick={() => setMobileMenuOpen(false)}
@@ -88,14 +83,14 @@ export function Navbar() {
               {link.name}
             </a>
           ))}
-          <Link 
-            href="/contact" 
+          <Link
+            href="/contact"
             className="px-5 py-2.5 text-sm font-medium bg-emerald-500 text-slate-950 hover:bg-emerald-400 rounded-full text-center mt-2"
             onClick={() => setMobileMenuOpen(false)}
           >
             Kontakt
           </Link>
-        </motion.div>
+        </div>
       )}
     </header>
   );

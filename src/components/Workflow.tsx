@@ -1,7 +1,5 @@
 'use client'
-import { motion, useScroll, useSpring } from 'motion/react';
 import { SectionTitle } from './SectionReveal';
-import { useRef } from 'react';
 
 const steps = [
   {
@@ -31,46 +29,27 @@ const steps = [
 ];
 
 export function Workflow() {
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start center", "end center"]
-  });
-
-  const scaleY = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
-
   return (
-    <section id="workflow" ref={containerRef} className="py-32 relative">
+    <section id="workflow" className="py-32 relative">
       {/* Background decoration */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[1px] bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent opacity-50" />
-      
+
       <div className="max-w-5xl mx-auto px-6 md:px-12">
-        <SectionTitle 
-          title="So arbeiten wir zusammen" 
+        <SectionTitle
+          title="So arbeiten wir zusammen"
           subtitle="Von der ersten Idee bis zum fertigen Ergebnis — transparent und planbar."
         />
 
         <div className="relative mt-20">
-          {/* Animated Connecting line for both mobile and desktop */}
+          {/* Connecting line */}
           <div className="absolute top-8 left-[31px] md:left-[39px] bottom-8 w-[2px] bg-slate-800 z-0">
-            <motion.div 
-              style={{ scaleY, originY: 0 }}
-              className="w-full h-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]"
-            />
+            <div className="w-full h-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]" />
           </div>
 
           <div className="flex flex-col gap-16">
             {steps.map((step, index) => (
-              <motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, x: -40 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.6, delay: 0.2 }}
                 className="relative z-10 flex flex-row gap-6 md:gap-12 items-start group"
               >
                 {/* Number Node */}
@@ -93,7 +72,7 @@ export function Workflow() {
                     {step.description}
                   </p>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>

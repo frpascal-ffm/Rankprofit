@@ -1,11 +1,8 @@
 'use client'
-import { motion, useScroll, useTransform } from 'motion/react';
 import { ArrowUpRight } from 'lucide-react';
-import React, { useRef } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import { SectionTitle } from './SectionReveal';
-
-const MotionImage = motion(Image);
 
 const projects = [
   {
@@ -39,45 +36,27 @@ const projects = [
 ];
 
 function ProjectCard({ project, index }: { project: any, index: number, key?: React.Key }) {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"]
-  });
-  
-  // Parallax effect for the image
-  const y = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
-
   return (
-    <motion.a
+    <a
       href={project.link}
       target="_blank"
       rel="noopener noreferrer"
-      ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.7, delay: index * 0.1, ease: "easeOut" }}
       className="group cursor-pointer block"
     >
-      <motion.div 
-        whileHover={{ y: -8 }}
-        transition={{ type: "spring", stiffness: 400, damping: 30 }}
-      >
+      <div>
         <div className="relative overflow-hidden rounded-3xl aspect-[4/3] mb-6 bg-slate-900 border border-slate-800 shadow-sm group-hover:shadow-xl group-hover:border-emerald-500/30 transition-all duration-500">
           <div className={`absolute inset-0 bg-gradient-to-br ${project.color} z-10 mix-blend-multiply opacity-50 group-hover:opacity-30 transition-opacity duration-500`} />
-          
-          <MotionImage
-            style={{ y, scale: 1.1 }}
+
+          <Image
             src={project.image}
             alt={project.title}
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
-          
+
           <div className="absolute inset-0 bg-slate-950/0 group-hover:bg-slate-950/20 transition-colors duration-500 z-20" />
-          
+
           {/* Hover Reveal Button */}
           <div className="absolute inset-0 z-30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
             <div className="px-6 py-3 bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-full text-white font-medium flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 shadow-lg">
@@ -85,7 +64,7 @@ function ProjectCard({ project, index }: { project: any, index: number, key?: Re
             </div>
           </div>
         </div>
-        
+
         <div className="flex justify-between items-start px-2">
           <div>
             <h3 className="text-2xl font-display font-semibold mb-2 text-white group-hover:text-emerald-400 transition-colors duration-300">{project.title}</h3>
@@ -95,8 +74,8 @@ function ProjectCard({ project, index }: { project: any, index: number, key?: Re
             <ArrowUpRight className="w-5 h-5" />
           </div>
         </div>
-      </motion.div>
-    </motion.a>
+      </div>
+    </a>
   );
 }
 
@@ -105,8 +84,8 @@ export function Portfolio() {
     <section id="portfolio" className="py-32 relative">
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-6">
-          <SectionTitle 
-            title="Referenzen" 
+          <SectionTitle
+            title="Referenzen"
             subtitle="Einblicke in unsere jüngsten Arbeiten für innovative Unternehmen."
             centered={false}
           />

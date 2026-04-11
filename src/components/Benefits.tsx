@@ -1,5 +1,4 @@
 'use client'
-import { motion } from 'motion/react';
 import { Check, TrendingUp, Award, PieChart, Users, Monitor } from 'lucide-react';
 
 export function Benefits() {
@@ -28,7 +27,7 @@ export function Benefits() {
 
         {/* Custom Asymmetrical Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
+
           {/* Card 1: Messbare Ergebnisse (Wide) */}
           <div className="md:col-span-2 bg-slate-900 border border-slate-800 rounded-3xl p-8 md:p-10 flex flex-col md:flex-row items-center gap-8 group hover:border-emerald-500/30 hover:shadow-[0_8px_30px_rgba(16,185,129,0.08)] transition-all duration-500 overflow-hidden relative">
             <div className="flex-1 z-10">
@@ -41,35 +40,28 @@ export function Benefits() {
               </p>
             </div>
             <div className="flex-1 w-full h-[200px] relative flex items-center justify-center">
-              {/* Animated Chart */}
+              {/* Static Chart */}
               <svg viewBox="0 0 300 150" className="w-full h-full overflow-visible">
                 {/* Background dashed line */}
-                <path 
-                  d="M 20 120 C 80 120, 100 30, 180 30 C 240 30, 260 80, 280 80" 
-                  fill="transparent" 
-                  stroke="#334155" 
-                  strokeWidth="3" 
-                  strokeDasharray="6 6" 
+                <path
+                  d="M 20 120 C 80 120, 100 30, 180 30 C 240 30, 260 80, 280 80"
+                  fill="transparent"
+                  stroke="#334155"
+                  strokeWidth="3"
+                  strokeDasharray="6 6"
                 />
-                {/* Animated solid line */}
-                <motion.path 
-                  d="M 20 120 C 80 120, 100 30, 180 30 C 240 30, 260 80, 280 80" 
-                  fill="transparent" 
-                  stroke="#10b981" 
+                {/* Solid line */}
+                <path
+                  d="M 20 120 C 80 120, 100 30, 180 30 C 240 30, 260 80, 280 80"
+                  fill="transparent"
+                  stroke="#10b981"
                   strokeWidth="4"
                   strokeLinecap="round"
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: 1 }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 1 }}
                 />
                 {/* Start Point */}
                 <circle cx="20" cy="120" r="6" fill="#0f172a" stroke="#475569" strokeWidth="3" />
-                {/* End Point Pulse */}
-                <motion.circle 
-                  cx="280" cy="80" r="6" fill="#10b981"
-                  animate={{ scale: [1, 1.5, 1], opacity: [1, 0.5, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                />
+                {/* End Point */}
+                <circle cx="280" cy="80" r="6" fill="#10b981" />
               </svg>
             </div>
           </div>
@@ -87,13 +79,6 @@ export function Benefits() {
             </div>
             <div className="mt-auto relative h-32 bg-slate-800 border border-slate-700 rounded-2xl flex items-center justify-center overflow-hidden shadow-inner">
               <Monitor className="w-16 h-16 text-slate-600" strokeWidth={1.5} />
-              {/* Sweeping Light Reflection */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-slate-700 to-transparent opacity-90"
-                style={{ width: '50%', skewX: '-20deg' }}
-                animate={{ x: ['-200%', '300%'] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 2 }}
-              />
             </div>
           </div>
 
@@ -109,12 +94,8 @@ export function Benefits() {
               </p>
             </div>
             <div className="mt-auto relative h-32 flex items-center justify-center">
-              {/* Floating Receipt Animation */}
-              <motion.div
-                className="w-4/5 bg-slate-800 border border-slate-700 shadow-md rounded-xl p-4 relative"
-                animate={{ y: [5, -5, 5] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              >
+              {/* Static Receipt */}
+              <div className="w-4/5 bg-slate-800 border border-slate-700 shadow-md rounded-xl p-4 relative">
                 <div className="h-2 bg-slate-700 rounded-full w-1/2 mb-3" />
                 <div className="h-2 bg-slate-700 rounded-full w-3/4 mb-4" />
                 <div className="border-t border-slate-700 pt-3 flex justify-between items-center">
@@ -122,15 +103,10 @@ export function Benefits() {
                   <div className="h-3 bg-emerald-500 rounded-full w-1/3" />
                 </div>
                 {/* Success Stamp */}
-                <motion.div 
-                  className="absolute -right-2 -top-2 w-8 h-8 bg-emerald-500 rounded-full border-2 border-slate-800 flex items-center justify-center shadow-sm"
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: [0, 1.2, 1], opacity: [0, 1, 1] }}
-                  transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 3.5 }}
-                >
+                <div className="absolute -right-2 -top-2 w-8 h-8 bg-emerald-500 rounded-full border-2 border-slate-800 flex items-center justify-center shadow-sm">
                   <Check className="w-4 h-4 text-white" strokeWidth={3} />
-                </motion.div>
-              </motion.div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -146,18 +122,9 @@ export function Benefits() {
               </p>
             </div>
             <div className="flex-1 w-full h-[200px] relative flex items-center justify-center">
-              {/* Pulsing Availability Ring */}
+              {/* Static Availability Ring */}
               <div className="relative flex items-center justify-center">
-                <motion.div 
-                  className="absolute w-32 h-32 border border-emerald-500/50 rounded-full"
-                  animate={{ scale: [1, 2], opacity: [0.8, 0] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeOut" }}
-                />
-                <motion.div 
-                  className="absolute w-32 h-32 border border-emerald-500/50 rounded-full"
-                  animate={{ scale: [1, 2], opacity: [0.8, 0] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeOut", delay: 1.25 }}
-                />
+                <div className="absolute w-32 h-32 border border-emerald-500/50 rounded-full" />
                 <div className="w-20 h-20 bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center z-10 shadow-lg relative">
                   <div className="absolute inset-2 bg-emerald-500/10 rounded-full" />
                   <Users className="w-8 h-8 text-emerald-500 relative z-10" />
