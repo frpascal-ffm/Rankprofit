@@ -2,6 +2,197 @@
 import { useRef, useEffect, useState } from 'react';
 import { Check, TrendingUp, Award, PieChart, Users, Monitor } from 'lucide-react';
 
+const PATH_D = "M 20 120 C 80 120, 100 30, 180 30 C 240 30, 260 80, 280 80";
+const AREA_D = "M 20 120 C 80 120, 100 30, 180 30 C 240 30, 260 80, 280 80 L 280 132 L 20 132 Z";
+const DRAW_MS  = 2600;
+const HOLD_MS  = 1600;
+const FADE_MS  = 500;
+const CYCLE_MS = DRAW_MS + HOLD_MS + FADE_MS;
+
+function easeInOut(t: number) {
+  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
+
+function ChartAnimation({ isInView }: { isInView: boolean }) {
+  const lineRef    = useRef<SVGPathElement>(null);
+  const areaRef    = useRef<SVGPathElement>(null);
+  const tDotRef    = useRef<SVGCircleElement>(null);  // traveling dot
+  const tGlowRef   = useRef<SVGCircleElement>(null);  // traveling glow
+  const endDotRef  = useRef<SVGCircleElement>(null);
+  const endRingRef = useRef<SVGCircleElement>(null);
+  const badgeRef   = useRef<SVGGElement>(null);
+  const rafRef   = useRef<number | null>(null);
+  const startRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const line = lineRef.current;
+    if (!line) return;
+    const len = line.getTotalLength();
+    line.style.strokeDasharray = `${len}`;
+
+    const reset = () => {
+      line.style.strokeDashoffset = `${len}`;
+      line.style.opacity = '1';
+      if (areaRef.current)    { areaRef.current.style.opacity = '0'; }
+      if (tDotRef.current)    { tDotRef.current.style.opacity = '0'; }
+      if (tGlowRef.current)   { tGlowRef.current.style.opacity = '0'; }
+      if (endDotRef.current)  { endDotRef.current.style.opacity = '0'; endDotRef.current.style.transform = 'scale(0)'; }
+      if (endRingRef.current) { endRingRef.current.style.opacity = '0'; }
+      if (badgeRef.current)   { badgeRef.current.style.opacity = '0'; }
+    };
+
+    reset();
+
+    if (!isInView) {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      startRef.current = null;
+      return;
+    }
+
+    const tick = (now: number) => {
+      if (!startRef.current) startRef.current = now;
+      const elapsed = (now - startRef.current) % CYCLE_MS;
+
+      if (elapsed < DRAW_MS) {
+        // ── Drawing phase ──
+        const t = easeInOut(elapsed / DRAW_MS);
+        const drawn = t * len;
+
+        line.style.strokeDashoffset = `${len - drawn}`;
+        line.style.opacity = '1';
+
+        const pt = line.getPointAtLength(drawn);
+        if (tDotRef.current) {
+          tDotRef.current.setAttribute('cx', String(pt.x));
+          tDotRef.current.setAttribute('cy', String(pt.y));
+          tDotRef.current.style.opacity = '1';
+        }
+        if (tGlowRef.current) {
+          tGlowRef.current.setAttribute('cx', String(pt.x));
+          tGlowRef.current.setAttribute('cy', String(pt.y));
+          tGlowRef.current.style.opacity = String(0.3 + t * 0.4);
+        }
+        if (areaRef.current)    areaRef.current.style.opacity    = String(t * 0.18);
+        if (endDotRef.current)  endDotRef.current.style.opacity  = '0';
+        if (endRingRef.current) endRingRef.current.style.opacity = '0';
+        if (badgeRef.current)   badgeRef.current.style.opacity   = '0';
+
+      } else if (elapsed < DRAW_MS + HOLD_MS) {
+        // ── Hold phase ──
+        const holdT = (elapsed - DRAW_MS) / HOLD_MS;
+
+        line.style.strokeDashoffset = '0';
+        line.style.opacity = '1';
+        if (tDotRef.current)  tDotRef.current.style.opacity  = '0';
+        if (tGlowRef.current) tGlowRef.current.style.opacity = '0';
+        if (areaRef.current)  areaRef.current.style.opacity  = '0.18';
+
+        // End dot pops in
+        if (endDotRef.current) {
+          endDotRef.current.style.opacity = '1';
+          const s = holdT < 0.15 ? easeInOut(holdT / 0.15) * 1.2 : holdT < 0.25 ? 1.2 - easeInOut((holdT - 0.15) / 0.1) * 0.2 : '1' as any;
+          endDotRef.current.style.transform = `scale(${typeof s === 'string' ? 1 : s})`;
+        }
+        if (endRingRef.current) {
+          const ringT = Math.min(1, holdT * 3);
+          endRingRef.current.style.opacity = String(0.6 * (1 - ringT));
+          endRingRef.current.setAttribute('r', String(5 + ringT * 14));
+        }
+        // Badge fades in at 30% into hold
+        if (badgeRef.current) {
+          const bT = Math.max(0, (holdT - 0.3) / 0.4);
+          badgeRef.current.style.opacity = String(Math.min(1, bT));
+        }
+
+      } else {
+        // ── Fade-out phase ──
+        const fadeT = (elapsed - DRAW_MS - HOLD_MS) / FADE_MS;
+        const op = Math.max(0, 1 - fadeT);
+        line.style.opacity = String(op);
+        if (areaRef.current)   areaRef.current.style.opacity   = String(op * 0.18);
+        if (endDotRef.current) endDotRef.current.style.opacity = String(op);
+        if (badgeRef.current)  badgeRef.current.style.opacity  = String(op);
+        if (endRingRef.current) endRingRef.current.style.opacity = '0';
+        if (fadeT >= 0.9) reset();
+      }
+
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, [isInView]);
+
+  return (
+    <svg viewBox="0 0 300 155" className="w-full h-full overflow-visible">
+      <defs>
+        <linearGradient id="area-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stopColor="#10b981" stopOpacity="1" />
+          <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
+        </linearGradient>
+        <filter id="line-glow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="2.5" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+        <filter id="dot-glow" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+      </defs>
+
+      {/* Grid lines */}
+      {[40, 65, 90, 115].map(y => (
+        <line key={y} x1="15" y1={y} x2="288" y2={y} stroke="#1e293b" strokeWidth="1" />
+      ))}
+
+      {/* Area fill */}
+      <path ref={areaRef} d={AREA_D} fill="url(#area-grad)" style={{ opacity: 0 }} />
+
+      {/* Ghost dashed path */}
+      <path d={PATH_D} fill="none" stroke="#1e293b" strokeWidth="2" strokeDasharray="5 4" />
+
+      {/* Animated green line */}
+      <path
+        ref={lineRef}
+        d={PATH_D}
+        fill="none"
+        stroke="#10b981"
+        strokeWidth="3"
+        strokeLinecap="round"
+        filter="url(#line-glow)"
+        style={{ opacity: 1 }}
+      />
+
+      {/* Traveling glow halo */}
+      <circle ref={tGlowRef} r="12" fill="#10b981" style={{ opacity: 0 }} filter="url(#dot-glow)" />
+
+      {/* Traveling dot */}
+      <circle ref={tDotRef} r="4.5" fill="#34d399" style={{ opacity: 0 }} filter="url(#dot-glow)" />
+
+      {/* Start dot */}
+      <circle cx="20" cy="120" r="4" fill="#0f172a" stroke="#475569" strokeWidth="2" />
+
+      {/* End ring (expands on arrival) */}
+      <circle ref={endRingRef} cx="280" cy="80" r="5" fill="none" stroke="#10b981" strokeWidth="1.5" style={{ opacity: 0 }} />
+
+      {/* End dot */}
+      <circle
+        ref={endDotRef}
+        cx="280" cy="80" r="5"
+        fill="#10b981"
+        filter="url(#dot-glow)"
+        style={{ opacity: 0, transformOrigin: '280px 80px' }}
+      />
+
+      {/* Badge: +127% ROI */}
+      <g ref={badgeRef} style={{ opacity: 0 }}>
+        <rect x="228" y="48" width="64" height="22" rx="11" fill="#10b981" fillOpacity="0.15" stroke="#10b981" strokeWidth="1" strokeOpacity="0.5" />
+        <text x="260" y="63" textAnchor="middle" fontSize="10" fontWeight="700" fill="#34d399" fontFamily="ui-monospace,monospace">+127% ROI</text>
+      </g>
+    </svg>
+  );
+}
+
 export function Benefits() {
   const sectionRef = useRef<HTMLElement>(null);
   const [isInView, setIsInView] = useState(false);
@@ -54,39 +245,7 @@ export function Benefits() {
               </p>
             </div>
             <div className="flex-1 w-full h-[200px] relative flex items-center justify-center">
-              <svg viewBox="0 0 300 150" className="w-full h-full overflow-visible">
-                {/* Background dashed line */}
-                <path
-                  d="M 20 120 C 80 120, 100 30, 180 30 C 240 30, 260 80, 280 80"
-                  fill="transparent"
-                  stroke="#334155"
-                  strokeWidth="3"
-                  strokeDasharray="6 6"
-                />
-                {/* Animated solid line */}
-                <path
-                  d="M 20 120 C 80 120, 100 30, 180 30 C 240 30, 260 80, 280 80"
-                  fill="transparent"
-                  stroke="#10b981"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                  strokeDasharray="600"
-                  style={isInView ? {
-                    animation: 'benefits-draw-path 4s ease-in-out infinite'
-                  } : {
-                    strokeDashoffset: 600
-                  }}
-                />
-                {/* Start Point */}
-                <circle cx="20" cy="120" r="6" fill="#0f172a" stroke="#475569" strokeWidth="3" />
-                {/* End Point Pulse */}
-                <circle
-                  cx="280" cy="80" r="6" fill="#10b981"
-                  style={isInView ? {
-                    animation: 'benefits-pulse-dot 2s ease-in-out infinite'
-                  } : {}}
-                />
-              </svg>
+              <ChartAnimation isInView={isInView} />
             </div>
           </div>
 

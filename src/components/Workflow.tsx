@@ -40,7 +40,7 @@ export function Workflow() {
   useEffect(() => {
     // Apply transition to number nodes once on mount
     numberNodeRefs.current.forEach((el) => {
-      if (el) el.style.transition = 'border-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease, background-color 0.4s ease';
+      if (el) el.style.transition = 'border-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease, background-color 0.4s ease, text-shadow 0.4s ease';
     });
 
     const handleScroll = () => {
@@ -70,8 +70,8 @@ export function Workflow() {
           if (fillBottom >= nodeCenter) {
             nodeEl.style.borderColor = 'rgba(16,185,129,0.5)';
             nodeEl.style.color = '#10b981';
-            nodeEl.style.boxShadow = '0 8px 30px rgba(16,185,129,0.15)';
-            nodeEl.style.backgroundColor = 'rgba(16,185,129,0.08)';
+            nodeEl.style.boxShadow = '0 0 24px rgba(16,185,129,0.2)';
+            nodeEl.style.backgroundColor = 'rgb(15,23,42)';
           } else {
             nodeEl.style.borderColor = 'rgb(30,41,59)';
             nodeEl.style.color = 'rgb(100,116,139)';
@@ -124,11 +124,11 @@ export function Workflow() {
           subtitle="Von der ersten Idee bis zum fertigen Ergebnis — transparent und planbar."
         />
 
-        <div className="relative mt-20">
+        <div className="relative mt-20 isolate">
           {/* Line track */}
           <div
             ref={lineTrackRef}
-            className="absolute top-8 left-[31px] md:left-[39px] bottom-8 w-[2px] bg-slate-800 z-0"
+            className="absolute top-8 left-[31px] md:left-[39px] bottom-8 w-[2px] bg-slate-800 -z-10"
           >
             <div
               ref={lineFillRef}
@@ -145,12 +145,12 @@ export function Workflow() {
                 className="relative z-10 flex flex-row gap-6 md:gap-12 items-start group"
               >
                 {/* Number Node */}
-                <div className="flex-shrink-0 relative">
+                <div className="flex-shrink-0 relative z-10">
                   <div
                     ref={el => { numberNodeRefs.current[index] = el; }}
-                    className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center font-display font-bold text-xl md:text-2xl text-slate-500 shadow-sm relative overflow-hidden z-10"
+                    className="w-16 h-16 md:w-20 md:h-20 rounded-2xl border-2 flex items-center justify-center font-display font-bold text-xl md:text-2xl shadow-sm"
                   >
-                    <span className="relative z-10">{step.number}</span>
+                    {step.number}
                   </div>
                 </div>
 
