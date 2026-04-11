@@ -1,7 +1,11 @@
+'use client'
 import { motion, useScroll, useTransform } from 'motion/react';
 import { ArrowUpRight } from 'lucide-react';
 import React, { useRef } from 'react';
+import Image from 'next/image';
 import { SectionTitle } from './SectionReveal';
+
+const MotionImage = motion(Image);
 
 const projects = [
   {
@@ -63,13 +67,13 @@ function ProjectCard({ project, index }: { project: any, index: number, key?: Re
         <div className="relative overflow-hidden rounded-3xl aspect-[4/3] mb-6 bg-slate-900 border border-slate-800 shadow-sm group-hover:shadow-xl group-hover:border-emerald-500/30 transition-all duration-500">
           <div className={`absolute inset-0 bg-gradient-to-br ${project.color} z-10 mix-blend-multiply opacity-50 group-hover:opacity-30 transition-opacity duration-500`} />
           
-          <motion.img 
-            style={{ y, scale: 1.1 }} // Scale up slightly to allow room for parallax
-            src={project.image} 
+          <MotionImage
+            style={{ y, scale: 1.1 }}
+            src={project.image}
             alt={project.title}
-            loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            referrerPolicy="no-referrer"
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
           
           <div className="absolute inset-0 bg-slate-950/0 group-hover:bg-slate-950/20 transition-colors duration-500 z-20" />

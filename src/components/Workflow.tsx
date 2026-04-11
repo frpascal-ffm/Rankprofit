@@ -1,3 +1,4 @@
+'use client'
 import { motion, useScroll, useSpring } from 'motion/react';
 import { SectionTitle } from './SectionReveal';
 import { useRef } from 'react';

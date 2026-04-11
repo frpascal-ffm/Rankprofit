@@ -1,3 +1,4 @@
+'use client'
 import { Hexagon } from 'lucide-react';
 
 export function Footer() {

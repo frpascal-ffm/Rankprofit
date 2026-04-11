@@ -1,19 +1,25 @@
-import { motion } from 'motion/react';
+'use client'
+
+import { motion, useMotionValue, useTransform } from 'motion/react';
 import { ArrowRight, TrendingUp } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Magnetic } from './Magnetic';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 export function Hero() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const spotX = useTransform(mouseX, x => (x - (typeof window !== 'undefined' ? window.innerWidth : 0) / 2) * 0.05);
+  const spotY = useTransform(mouseY, y => (y - (typeof window !== 'undefined' ? window.innerHeight : 0) / 2) * 0.05);
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
     };
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [mouseX, mouseY]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -25,10 +31,10 @@ export function Hero() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 30 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { duration: 0.8, type: "spring", bounce: 0.4 } 
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, type: "spring" as const, bounce: 0.4 }
     }
   };
 
@@ -37,13 +43,9 @@ export function Hero() {
       {/* Background Elements Container with Bottom Fade Mask */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none [mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]">
         {/* Interactive Spotlight Background */}
-        <motion.div 
+        <motion.div
           className="absolute w-[800px] h-[800px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none mix-blend-screen"
-          animate={{
-            x: (mousePosition.x - window.innerWidth / 2) * 0.05,
-            y: (mousePosition.y - window.innerHeight / 2) * 0.05,
-          }}
-          transition={{ type: "tween", ease: "backOut", duration: 2 }}
+          style={{ x: spotX, y: spotY }}
         />
 
         {/* Animated Grid Background */}
@@ -55,44 +57,22 @@ export function Hero() {
         <div className="absolute inset-0 opacity-30">
           <svg className="absolute w-full h-full" preserveAspectRatio="none" viewBox="0 0 1000 1000">
             <motion.path
+              d="M0,800 Q200,700 400,800 T800,600 T1000,400"
               fill="none"
               stroke="url(#emerald-gradient)"
               strokeWidth="4"
               initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ 
-                pathLength: 1, 
-                opacity: 1,
-                d: [
-                  "M0,800 Q200,700 400,800 T800,600 T1000,400",
-                  "M0,800 Q200,850 400,750 T800,700 T1000,400",
-                  "M0,800 Q200,700 400,800 T800,600 T1000,400"
-                ]
-              }}
-              transition={{ 
-                pathLength: { duration: 3, ease: "easeInOut", delay: 0.5 },
-                opacity: { duration: 3, ease: "easeInOut", delay: 0.5 },
-                d: { duration: 8, repeat: Infinity, ease: "easeInOut" }
-              }}
+              animate={{ pathLength: 1, opacity: 1 }}
+              transition={{ duration: 3, ease: "easeInOut", delay: 0.5 }}
             />
             <motion.path
+              d="M0,900 Q300,850 500,700 T900,500 T1000,200"
               fill="none"
               stroke="url(#emerald-gradient-2)"
               strokeWidth="2"
               initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ 
-                pathLength: 1, 
-                opacity: 0.5,
-                d: [
-                  "M0,900 Q300,850 500,700 T900,500 T1000,200",
-                  "M0,900 Q300,750 500,800 T900,600 T1000,200",
-                  "M0,900 Q300,850 500,700 T900,500 T1000,200"
-                ]
-              }}
-              transition={{ 
-                pathLength: { duration: 4, ease: "easeInOut", delay: 1 },
-                opacity: { duration: 4, ease: "easeInOut", delay: 1 },
-                d: { duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }
-              }}
+              animate={{ pathLength: 1, opacity: 0.5 }}
+              transition={{ duration: 4, ease: "easeInOut", delay: 1 }}
             />
             <defs>
               <linearGradient id="emerald-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -153,8 +133,8 @@ export function Hero() {
           className="flex flex-col sm:flex-row items-center justify-center gap-6"
         >
           <Magnetic strength={0.4}>
-            <Link 
-              to="/contact" 
+            <Link
+              href="/contact"
               className="group relative w-full sm:w-auto px-8 py-4 bg-emerald-500 text-slate-950 rounded-full font-bold flex items-center justify-center gap-2 overflow-hidden transition-transform hover:scale-105 duration-300"
             >
               <div className="absolute inset-0 bg-emerald-400 scale-0 rounded-full group-hover:scale-150 transition-transform duration-500 ease-out origin-center" />

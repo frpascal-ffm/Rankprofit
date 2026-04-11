@@ -1,8 +1,10 @@
+'use client'
+
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Menu, X, Hexagon } from 'lucide-react';
 import { Magnetic } from './Magnetic';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -10,7 +12,7 @@ export function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -28,7 +30,7 @@ export function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 group cursor-pointer">
+        <Link href="/" className="flex items-center gap-2 group cursor-pointer">
           <Hexagon className={`w-8 h-8 transition-transform duration-500 group-hover:rotate-90 ${scrolled ? 'text-emerald-500' : 'text-emerald-400'}`} />
           <span className={`font-display font-bold text-xl tracking-tight transition-colors duration-300 text-white`}>
             Rankprofit<span className={scrolled ? 'text-emerald-500' : 'text-emerald-400'}>.</span>
@@ -53,7 +55,7 @@ export function Navbar() {
         <div className="hidden md:block">
           <Magnetic strength={0.2}>
             <Link 
-              to="/contact" 
+              href="/contact" 
               className={`px-5 py-2.5 text-sm font-medium rounded-full transition-colors bg-emerald-500 text-slate-950 hover:bg-emerald-400`}
             >
               Kontakt
@@ -87,7 +89,7 @@ export function Navbar() {
             </a>
           ))}
           <Link 
-            to="/contact" 
+            href="/contact" 
             className="px-5 py-2.5 text-sm font-medium bg-emerald-500 text-slate-950 hover:bg-emerald-400 rounded-full text-center mt-2"
             onClick={() => setMobileMenuOpen(false)}
           >

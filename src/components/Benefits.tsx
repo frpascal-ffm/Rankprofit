@@ -1,3 +1,4 @@
+'use client'
 import { motion } from 'motion/react';
 import { Check, TrendingUp, Award, PieChart, Users, Monitor } from 'lucide-react';
 

@@ -1,3 +1,4 @@
+'use client'
 import { useState, useEffect } from 'react';
 import { motion, useMotionValue, useSpring } from 'motion/react';
 
@@ -25,30 +26,21 @@ export function CustomCursor() {
     const handleMouseDown = () => setIsClicking(true);
     const handleMouseUp = () => setIsClicking(false);
     
-    const handleMouseOver = (e: MouseEvent) => {
+    const handlePointerOver = (e: PointerEvent) => {
       const target = e.target as HTMLElement;
-      if (
-        target.tagName.toLowerCase() === 'a' || 
-        target.tagName.toLowerCase() === 'button' || 
-        target.closest('a') || 
-        target.closest('button') ||
-        target.classList.contains('magnetic') ||
-        target.classList.contains('group')
-      ) {
-        setIsHovering(true);
-      } else {
-        setIsHovering(false);
-      }
+      const tag = target.tagName.toLowerCase();
+      const isInteractive = tag === 'a' || tag === 'button' || target.closest('a,button') !== null;
+      setIsHovering(isInteractive);
     };
 
     window.addEventListener('mousemove', updateMousePosition);
-    window.addEventListener('mouseover', handleMouseOver);
+    window.addEventListener('pointerover', handlePointerOver);
     window.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mouseup', handleMouseUp);
 
     return () => {
       window.removeEventListener('mousemove', updateMousePosition);
-      window.removeEventListener('mouseover', handleMouseOver);
+      window.removeEventListener('pointerover', handlePointerOver);
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
     };

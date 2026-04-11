@@ -1,31 +1,33 @@
-import { motion } from 'motion/react';
+'use client'
+
+import { motion, useMotionValue, useTransform } from 'motion/react';
 import { ArrowRight, Sparkles } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Magnetic } from './Magnetic';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 export function CTA() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const spotX = useTransform(mouseX, x => (x - (typeof window !== 'undefined' ? window.innerWidth : 0) / 2) * 0.1);
+  const spotY = useTransform(mouseY, y => (y - (typeof window !== 'undefined' ? window.innerHeight : 0) / 2) * 0.1);
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
     };
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [mouseX, mouseY]);
 
   return (
     <section id="contact" className="py-40 relative">
       {/* Interactive Background Glow */}
       <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
-        <motion.div 
+        <motion.div
           className="absolute w-[1000px] h-[1000px] bg-emerald-500/10 rounded-full blur-[150px] mix-blend-screen"
-          animate={{
-            x: (mousePosition.x - window.innerWidth / 2) * 0.1,
-            y: (mousePosition.y - window.innerHeight / 2) * 0.1,
-          }}
-          transition={{ type: "tween", ease: "backOut", duration: 2 }}
+          style={{ x: spotX, y: spotY }}
         />
         
         <div className="absolute top-20 left-1/4 w-64 h-64 bg-teal-500/5 rounded-full blur-3xl" />
@@ -74,8 +76,8 @@ export function CTA() {
           className="flex justify-center"
         >
           <Magnetic strength={0.5}>
-            <Link 
-              to="/contact" 
+            <Link
+              href="/contact"
               className="group relative inline-flex items-center gap-4 px-10 py-6 bg-emerald-500 text-slate-950 rounded-full font-bold text-lg overflow-hidden transition-transform hover:scale-105 duration-300"
             >
               <div className="absolute inset-0 bg-emerald-400 scale-0 rounded-full group-hover:scale-150 transition-transform duration-500 ease-out origin-center" />
