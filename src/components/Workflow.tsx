@@ -1,4 +1,5 @@
 'use client'
+import { useRef, useEffect, useState } from 'react';
 import { SectionTitle } from './SectionReveal';
 
 const steps = [
@@ -29,8 +30,67 @@ const steps = [
 ];
 
 export function Workflow() {
+  const containerRef = useRef<HTMLElement>(null);
+  const lineRef = useRef<HTMLDivElement>(null);
+  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const rafRef = useRef<number | null>(null);
+  const [lineScaleY, setLineScaleY] = useState(0);
+
+  // Scroll-driven vertical line fill
+  useEffect(() => {
+    const handleScroll = () => {
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(() => {
+        if (!containerRef.current) { rafRef.current = null; return; }
+        const rect = containerRef.current.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        // Start filling when top of section hits center, finish when bottom hits center
+        const start = rect.top - viewportHeight * 0.5;
+        const end = rect.bottom - viewportHeight * 0.5;
+        const progress = Math.min(1, Math.max(0, -start / (end - start)));
+        setLineScaleY(progress);
+        rafRef.current = null;
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // run once on mount
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  // IntersectionObserver for step slide-in
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+
+    stepRefs.current.forEach((el, index) => {
+      if (!el) return;
+      // Set initial hidden state
+      el.style.opacity = '0';
+      el.style.transform = 'translateX(-32px)';
+      el.style.transition = `opacity 0.6s ease ${index * 80}ms, transform 0.6s ease ${index * 80}ms`;
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            el.style.opacity = '1';
+            el.style.transform = 'translateX(0)';
+            observer.disconnect();
+          }
+        },
+        { threshold: 0.3 }
+      );
+      observer.observe(el);
+      observers.push(observer);
+    });
+
+    return () => observers.forEach(o => o.disconnect());
+  }, []);
+
   return (
-    <section id="workflow" className="py-32 relative">
+    <section id="workflow" ref={containerRef} className="py-32 relative">
       {/* Background decoration */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[1px] bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent opacity-50" />
 
@@ -41,15 +101,24 @@ export function Workflow() {
         />
 
         <div className="relative mt-20">
-          {/* Connecting line */}
+          {/* Connecting line track */}
           <div className="absolute top-8 left-[31px] md:left-[39px] bottom-8 w-[2px] bg-slate-800 z-0">
-            <div className="w-full h-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]" />
+            {/* Animated fill */}
+            <div
+              ref={lineRef}
+              className="w-full h-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)] origin-top"
+              style={{
+                transform: `scaleY(${lineScaleY})`,
+                transition: 'transform 80ms linear',
+              }}
+            />
           </div>
 
           <div className="flex flex-col gap-16">
             {steps.map((step, index) => (
               <div
                 key={index}
+                ref={el => { stepRefs.current[index] = el; }}
                 className="relative z-10 flex flex-row gap-6 md:gap-12 items-start group"
               >
                 {/* Number Node */}
