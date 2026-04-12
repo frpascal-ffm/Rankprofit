@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Menu, X, Hexagon, ChevronUp, ChevronDown } from 'lucide-react';
 import { Magnetic } from './Magnetic';
 import Link from 'next/link';
+import { useFormModal } from '@/src/contexts/FormModalContext';
 
 const leistungen = [
   { name: 'Webdesign & UI/UX', desc: 'Conversion-optimierte Websites', href: '/leistungen/webdesign' },
@@ -15,6 +16,7 @@ const leistungen = [
 ];
 
 export function Navbar() {
+  const { openModal } = useFormModal();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [leistungenOpen, setLeistungenOpen] = useState(false);
@@ -105,12 +107,13 @@ export function Navbar() {
 
         <div className="hidden md:block">
           <Magnetic strength={0.2}>
-            <Link
-              href="/contact"
+            <button
+              type="button"
+              onClick={openModal}
               className={`px-5 py-2.5 text-sm font-medium rounded-full transition-colors bg-emerald-500 text-slate-950 hover:bg-emerald-400`}
             >
               Kostenlosen Entwurf sichern
-            </Link>
+            </button>
           </Magnetic>
         </div>
 
@@ -161,13 +164,13 @@ export function Navbar() {
               {link.name}
             </a>
           ))}
-          <Link
-            href="/contact"
-            className="px-5 py-2.5 text-sm font-medium bg-emerald-500 text-slate-950 hover:bg-emerald-400 rounded-full text-center mt-2"
-            onClick={() => setMobileMenuOpen(false)}
+          <button
+            type="button"
+            onClick={() => { openModal(); setMobileMenuOpen(false); }}
+            className="px-5 py-2.5 text-sm font-medium bg-emerald-500 text-slate-950 hover:bg-emerald-400 rounded-full text-center mt-2 w-full"
           >
             Kostenlosen Entwurf sichern
-          </Link>
+          </button>
         </div>
       )}
     </header>

@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { SectionReveal, SectionTitle } from './SectionReveal';
 import { Magnetic } from './Magnetic';
+import { useFormModal } from '@/src/contexts/FormModalContext';
 
 // ─── Hero ────────────────────────────────────────────────────────────────────
 
@@ -327,12 +328,149 @@ function DeliverablesSection() {
   );
 }
 
+// ─── Pricing ─────────────────────────────────────────────────────────────────
+
+function PricingSection() {
+  const [isAbo, setIsAbo] = useState(false);
+  const { openModal } = useFormModal();
+
+  return (
+    <section className="py-24 relative">
+      <div className="max-w-5xl mx-auto px-6 md:px-12">
+        <SectionTitle title="Transparente Preise" />
+
+        {/* Toggle */}
+        <SectionReveal>
+          <div className="flex flex-col items-center gap-3 mb-12">
+            <div className="relative grid grid-cols-2 bg-slate-900 border border-slate-700 rounded-full p-1.5">
+              {/* Sliding indicator */}
+              <span
+                className="absolute top-1.5 bottom-1.5 rounded-full bg-emerald-500 transition-all duration-300 ease-in-out"
+                style={{
+                  left: isAbo ? '50%' : '6px',
+                  right: isAbo ? '6px' : '50%',
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setIsAbo(false)}
+                className={`relative z-10 px-6 py-2.5 rounded-full text-sm font-medium transition-colors duration-200 focus:outline-none whitespace-nowrap ${
+                  !isAbo ? 'text-slate-950' : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                Einmalkauf
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsAbo(true)}
+                className={`relative z-10 px-6 py-2.5 rounded-full text-sm font-medium transition-colors duration-200 focus:outline-none whitespace-nowrap ${
+                  isAbo ? 'text-slate-950' : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                Webseiten-Abo
+              </button>
+            </div>
+            {/* Neu badge outside the pill */}
+            <span className="inline-block px-2.5 py-0.5 text-xs rounded-full font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
+              Webseiten-Abo jetzt neu verfügbar
+            </span>
+          </div>
+        </SectionReveal>
+
+        {/* Card */}
+        <SectionReveal delay={0.1}>
+          <div className="relative rounded-3xl bg-slate-900 border border-emerald-500/25 p-10 md:p-14 overflow-hidden max-w-2xl mx-auto">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-emerald-500/5 blur-3xl pointer-events-none" />
+
+            <div className="relative z-10 text-center">
+              {isAbo ? (
+                <>
+                  <p className="text-sm font-medium text-emerald-400 mb-3 tracking-wide uppercase">Webseiten-Abo</p>
+                  <div className="flex items-end justify-center gap-1 mb-2">
+                    <span className="text-slate-400 mb-3 mr-1 text-base">ab</span>
+                    <span className="text-6xl md:text-7xl font-display font-bold text-white">99</span>
+                    <span className="text-2xl font-medium text-slate-300 mb-3">€</span>
+                    <span className="text-slate-400 mb-3 text-lg">/ Monat</span>
+                  </div>
+                  <p className="text-slate-400 text-sm mb-10">
+                    12-Monats-Abo – keine hohe Einmalzahlung, alles inklusive.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left mb-10">
+                    {[
+                      'Professionelles Webdesign inklusive',
+                      'Hosting & Wartung übernommen',
+                      'Laufende Updates & Änderungen',
+                      'Support per E-Mail & Chat',
+                      'SSL, Sicherheit & Backups',
+                      '12 Monate Laufzeit',
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div className="w-5 h-5 rounded-full bg-emerald-500/15 text-emerald-400 flex items-center justify-center flex-shrink-0">
+                          <Check className="w-3 h-3" />
+                        </div>
+                        <span className="text-slate-300 text-sm">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm font-medium text-emerald-400 mb-3 tracking-wide uppercase">Einmalkauf</p>
+                  <div className="flex items-end justify-center gap-1 mb-2">
+                    <span className="text-sm text-slate-400 mb-4 mr-1">ab</span>
+                    <span className="text-6xl md:text-7xl font-display font-bold text-white">1.499</span>
+                    <span className="text-2xl font-medium text-slate-300 mb-3">€</span>
+                  </div>
+                  <p className="text-slate-400 text-sm mb-10">
+                    Einmalige Investition – Ihre Website gehört Ihnen. Keine laufenden Gebühren.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left mb-10">
+                    {[
+                      'Individuelles Design',
+                      'Vollständig responsiv',
+                      'SEO-technisch optimiert',
+                      'Ladezeit unter 2 Sekunden',
+                      'DSGVO-konform',
+                      'Hosting exklusive',
+                      'Wartungsvertrag möglich',
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div className="w-5 h-5 rounded-full bg-emerald-500/15 text-emerald-400 flex items-center justify-center flex-shrink-0">
+                          <Check className="w-3 h-3" />
+                        </div>
+                        <span className="text-slate-300 text-sm">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              <button
+                type="button"
+                onClick={openModal}
+                className="w-full flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-emerald-500 text-slate-950 font-semibold text-sm hover:bg-emerald-400 transition-colors shadow-[0_10px_40px_rgba(16,185,129,0.25)]"
+              >
+                Jetzt Angebot anfragen
+                <ArrowRight className="w-4 h-4" />
+              </button>
+
+              <p className="text-slate-500 text-xs mt-4">
+                Kostenlose Erstberatung · Kein Risiko
+              </p>
+            </div>
+          </div>
+        </SectionReveal>
+      </div>
+    </section>
+  );
+}
+
 // ─── FAQ ─────────────────────────────────────────────────────────────────────
 
 const faqs = [
   {
     question: 'Was kostet eine professionelle Website?',
-    answer: 'Der Preis hängt vom Umfang, der Komplexität und den gewünschten Funktionen ab. Eine einfache Unternehmenswebsite beginnt bei ca. 2.500 €, umfangreichere Projekte mit individuellen Funktionen entsprechend mehr. In einem kostenlosen Erstgespräch erstellen wir Ihnen ein transparentes Angebot.',
+    answer: 'Wir bieten zwei Modelle: Einmalkauf ab 1.499 € (die Website gehört Ihnen, Hosting exklusive) oder unser Webseiten-Abo ab 99 € / Monat mit 12 Monaten Laufzeit – inklusive Hosting, Wartung und laufendem Support. In einem kostenlosen Erstgespräch finden wir gemeinsam das passende Modell für Sie.',
   },
   {
     question: 'Wie lange dauert die Umsetzung?',
@@ -398,6 +536,7 @@ function FaqSection() {
 // ─── CTA ─────────────────────────────────────────────────────────────────────
 
 function CtaSection() {
+  const { openModal } = useFormModal();
   return (
     <section className="py-32 relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
@@ -416,13 +555,14 @@ function CtaSection() {
             Lassen Sie uns gemeinsam eine Website entwickeln, die Ihre Besucher begeistert und Ihren Umsatz steigert.
           </p>
           <Magnetic strength={0.2}>
-            <Link
-              href="/contact"
+            <button
+              type="button"
+              onClick={openModal}
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-emerald-500 text-slate-950 font-semibold text-base hover:bg-emerald-400 transition-colors shadow-[0_10px_40px_rgba(16,185,129,0.3)]"
             >
               Kostenlosen Entwurf sichern
               <ArrowRight className="w-5 h-5" />
-            </Link>
+            </button>
           </Magnetic>
         </SectionReveal>
       </div>
@@ -440,6 +580,7 @@ export function WebdesignPage() {
       <BenefitsSection />
       <ProcessSection />
       <DeliverablesSection />
+      <PricingSection />
       <FaqSection />
       <CtaSection />
     </main>

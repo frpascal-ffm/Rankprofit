@@ -2,9 +2,10 @@
 
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { Magnetic } from './Magnetic';
-import Link from 'next/link';
+import { useFormModal } from '@/src/contexts/FormModalContext';
 
 export function CTA() {
+  const { openModal } = useFormModal();
   return (
     <section id="contact" className="py-40 relative overflow-hidden blend-section">
       {/* Background Glow */}
@@ -33,8 +34,9 @@ export function CTA() {
 
         <div className="flex justify-center">
           <Magnetic strength={0.5}>
-            <Link
-              href="/contact"
+            <button
+              type="button"
+              onClick={openModal}
               className="group relative inline-flex items-center gap-4 px-10 py-6 bg-emerald-500 text-slate-950 rounded-full font-bold text-lg overflow-hidden transition-transform hover:scale-105 duration-300"
             >
               <div className="absolute inset-0 bg-emerald-400 scale-0 rounded-full group-hover:scale-150 transition-transform duration-500 ease-out origin-center" />
@@ -44,7 +46,7 @@ export function CTA() {
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300" />
                 </div>
               </span>
-            </Link>
+            </button>
           </Magnetic>
         </div>
       </div>

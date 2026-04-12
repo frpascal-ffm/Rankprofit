@@ -3,6 +3,7 @@
 import { useEffect, useRef, ReactNode } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
+import { useFormModal } from '@/src/contexts/FormModalContext';
 import { SectionReveal, SectionTitle } from './SectionReveal';
 import { Magnetic } from './Magnetic';
 
@@ -172,6 +173,7 @@ function ProcessSection({ steps }: { steps: ServiceStep[] }) {
 }
 
 function CtaSection({ headline, subtitle }: { headline: string; subtitle: string }) {
+  const { openModal } = useFormModal();
   return (
     <section className="py-32 relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
@@ -190,13 +192,14 @@ function CtaSection({ headline, subtitle }: { headline: string; subtitle: string
             {subtitle}
           </p>
           <Magnetic strength={0.2}>
-            <Link
-              href="/contact"
+            <button
+              type="button"
+              onClick={openModal}
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-emerald-500 text-slate-950 font-semibold text-base hover:bg-emerald-400 transition-colors shadow-[0_10px_40px_rgba(16,185,129,0.3)]"
             >
               Kostenlosen Entwurf sichern
               <ArrowRight className="w-5 h-5" />
-            </Link>
+            </button>
           </Magnetic>
         </SectionReveal>
       </div>
