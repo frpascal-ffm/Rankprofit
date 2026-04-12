@@ -94,10 +94,10 @@ function HeroSection() {
           <Magnetic strength={0.2}>
             <button
               type="button"
-              onClick={openModal}
+              onClick={() => openModal('seo')}
               className="flex items-center gap-2 px-7 py-3.5 rounded-full bg-emerald-500 text-slate-950 font-semibold text-sm hover:bg-emerald-400 transition-colors"
             >
-              Jetzt Paket buchen
+              Jetzt Paket anfragen
               <ArrowRight className="w-4 h-4" />
             </button>
           </Magnetic>
@@ -244,7 +244,7 @@ const packages = [
       'Monatlicher Report',
       'Support per E-Mail',
     ],
-    cta: 'Starter buchen',
+    cta: 'Starter anfragen',
   },
   {
     name: 'Growth',
@@ -259,7 +259,7 @@ const packages = [
       'Lokales SEO & Google Maps',
       'Wöchentliches Reporting + monatl. Call',
     ],
-    cta: 'Growth buchen',
+    cta: 'Growth anfragen',
   },
   {
     name: 'Enterprise',
@@ -345,7 +345,7 @@ function PricingSection() {
 
                   <button
                     type="button"
-                    onClick={openModal}
+                    onClick={() => openModal('seo', { package: pkg.name })}
                     className={`w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-semibold text-sm transition-colors ${
                       pkg.highlight
                         ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400 shadow-[0_8px_30px_rgba(16,185,129,0.3)]'
@@ -577,7 +577,7 @@ function CtaSection() {
           <Magnetic strength={0.2}>
             <button
               type="button"
-              onClick={openModal}
+              onClick={() => openModal('seo')}
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-emerald-500 text-slate-950 font-semibold text-base hover:bg-emerald-400 transition-colors shadow-[0_10px_40px_rgba(16,185,129,0.3)]"
             >
               Kostenloses Erstgespräch

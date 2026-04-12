@@ -1,7 +1,7 @@
 {
-  "/leistungen/ki-automatisierung/page": "app/leistungen/ki-automatisierung/page.js",
-  "/page": "app/page.js",
-  "/leistungen/seo/page": "app/leistungen/seo/page.js",
   "/leistungen/webdesign/page": "app/leistungen/webdesign/page.js",
-  "/contact/page": "app/contact/page.js"
+  "/leistungen/ki-automatisierung/page": "app/leistungen/ki-automatisierung/page.js",
+  "/contact/page": "app/contact/page.js",
+  "/page": "app/page.js",
+  "/leistungen/seo/page": "app/leistungen/seo/page.js"
 }

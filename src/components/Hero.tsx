@@ -2,9 +2,10 @@
 
 import { ArrowRight, TrendingUp } from 'lucide-react';
 import { Magnetic } from './Magnetic';
-import Link from 'next/link';
+import { useFormModal } from '@/src/contexts/FormModalContext';
 
 export function Hero() {
+  const { openModal } = useFormModal();
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-20 text-white blend-section">
       {/* Background Elements Container with Bottom Fade Mask */}
@@ -75,18 +76,19 @@ export function Hero() {
           Keine leeren Versprechungen, nur harte KPIs und echtes Wachstum.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+        <div className="flex items-center justify-center">
           <Magnetic strength={0.4}>
-            <Link
-              href="/contact"
-              className="group relative w-full sm:w-auto px-8 py-4 bg-emerald-500 text-slate-950 rounded-full font-bold flex items-center justify-center gap-2 overflow-hidden transition-transform hover:scale-105 duration-300"
+            <button
+              type="button"
+              onClick={openModal}
+              className="group relative px-6 py-3 sm:px-8 sm:py-4 bg-emerald-500 text-slate-950 rounded-full font-bold flex items-center justify-center gap-2 overflow-hidden transition-transform hover:scale-105 duration-300 text-sm sm:text-base"
             >
               <div className="absolute inset-0 bg-emerald-400 scale-0 rounded-full group-hover:scale-150 transition-transform duration-500 ease-out origin-center" />
               <span className="relative z-10 flex items-center gap-2">
-                Jetzt Projekt starten
+                Kostenlosen Entwurf sichern
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
               </span>
-            </Link>
+            </button>
           </Magnetic>
         </div>
       </div>

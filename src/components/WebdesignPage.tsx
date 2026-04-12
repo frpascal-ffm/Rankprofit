@@ -14,6 +14,7 @@ import { useFormModal } from '@/src/contexts/FormModalContext';
 // ─── Hero ────────────────────────────────────────────────────────────────────
 
 function HeroSection() {
+  const { openModal } = useFormModal();
   const badgeRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
@@ -91,13 +92,14 @@ function HeroSection() {
 
         <div ref={actionsRef} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Magnetic strength={0.2}>
-            <Link
-              href="/contact"
+            <button
+              type="button"
+              onClick={openModal}
               className="flex items-center gap-2 px-7 py-3.5 rounded-full bg-emerald-500 text-slate-950 font-semibold text-sm hover:bg-emerald-400 transition-colors"
             >
-              Jetzt Projekt starten
+              Kostenlosen Entwurf sichern
               <ArrowRight className="w-4 h-4" />
-            </Link>
+            </button>
           </Magnetic>
           <Link
             href="/#services"

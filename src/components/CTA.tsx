@@ -37,13 +37,13 @@ export function CTA() {
             <button
               type="button"
               onClick={openModal}
-              className="group relative inline-flex items-center gap-4 px-10 py-6 bg-emerald-500 text-slate-950 rounded-full font-bold text-lg overflow-hidden transition-transform hover:scale-105 duration-300"
+              className="group relative inline-flex items-center gap-3 px-6 py-3 sm:px-8 sm:py-4 bg-emerald-500 text-slate-950 rounded-full font-bold text-sm sm:text-base overflow-hidden transition-transform hover:scale-105 duration-300"
             >
               <div className="absolute inset-0 bg-emerald-400 scale-0 rounded-full group-hover:scale-150 transition-transform duration-500 ease-out origin-center" />
-              <span className="relative z-10 flex items-center gap-3">
+              <span className="relative z-10 flex items-center gap-2 sm:gap-3">
                 Kostenlosen Entwurf sichern
-                <div className="w-8 h-8 bg-slate-950/10 text-slate-950 rounded-full flex items-center justify-center group-hover:bg-slate-950 group-hover:text-emerald-500 transition-colors duration-300">
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300" />
+                <div className="w-6 h-6 bg-slate-950/10 text-slate-950 rounded-full flex items-center justify-center group-hover:bg-slate-950 group-hover:text-emerald-500 transition-colors duration-300">
+                  <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform duration-300" />
                 </div>
               </span>
             </button>

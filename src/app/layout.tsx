@@ -6,7 +6,8 @@ import { Footer } from '@/src/components/Footer'
 import { CustomCursor } from '@/src/components/CustomCursor'
 import { ScrollProgress } from '@/src/components/ScrollProgress'
 import { FormModalProvider } from '@/src/contexts/FormModalContext'
-import { MultiStepFormModal } from '@/src/components/MultiStepFormModal'
+import { EntwurfAnfrageModal } from '@/src/components/EntwurfAnfrageModal'
+import { SEOAnfrageModal } from '@/src/components/SEOAnfrageModal'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -26,7 +27,14 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: 'Niro Media | Online Marketing Agentur',
+  title: {
+    default: 'Rankprofit | Performance Marketing Agentur',
+    template: '%s | Rankprofit',
+  },
+  description: 'Datengetriebene SEO- und SEA-Strategien, die Ihren Umsatz messbar skalieren. Rankprofit – Wir ranken. Sie profitieren.',
+  icons: {
+    icon: '/icon.svg',
+  },
 }
 
 export default function RootLayout({
@@ -52,7 +60,8 @@ export default function RootLayout({
 
           <Footer />
 
-          <MultiStepFormModal />
+          <EntwurfAnfrageModal />
+          <SEOAnfrageModal />
         </FormModalProvider>
       </body>
     </html>

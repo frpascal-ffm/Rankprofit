@@ -4,33 +4,21 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import {
   ArrowRight,
+  Award,
   CheckCircle2,
   ChevronLeft,
-  Monitor,
-  ShoppingBag,
-  RefreshCw,
-  Briefcase,
   Globe,
-  Smartphone,
-  Hammer,
-  UtensilsCrossed,
-  Heart,
-  Home,
-  ShoppingCart,
-  MessageSquare,
-  Palette,
-  Cpu,
-  HelpCircle,
-  Minimize2,
-  Zap,
-  Crown,
-  Sparkles,
-  X,
   Mail,
+  MapPin,
+  ShoppingCart,
+  Star,
+  TrendingUp,
+  X,
+  Zap,
 } from 'lucide-react'
+import { useFormModal } from '@/src/contexts/FormModalContext'
 
 // ─── WhatsApp config ──────────────────────────────────────────────────────────
-// Replace with your actual WhatsApp number (international format, no + or spaces)
 const WHATSAPP_NUMBER = '491749900043'
 
 function WhatsAppIcon({ className }: { className?: string }) {
@@ -40,16 +28,14 @@ function WhatsAppIcon({ className }: { className?: string }) {
     </svg>
   )
 }
-import { useFormModal } from '@/src/contexts/FormModalContext'
 
-// ─── Types ───────────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface FormData {
-  websiteType: string
-  branche: string
-  designStyle: string
-  paymentModel: 'einmalig' | 'monatlich'
-  budgetIndex: number
+  paket: string
+  ziel: string
+  websiteUrl: string
+  hatteSeo: 'ja' | 'nein' | ''
   vorname: string
   nachname: string
   email: string
@@ -57,57 +43,32 @@ interface FormData {
   terminChoice: 'whatsapp' | 'email'
 }
 
+const defaultData: FormData = {
+  paket: '',
+  ziel: '',
+  websiteUrl: '',
+  hatteSeo: '',
+  vorname: '',
+  nachname: '',
+  email: '',
+  telefon: '',
+  terminChoice: 'whatsapp',
+}
+
 // ─── Step card data ───────────────────────────────────────────────────────────
 
-const websiteTypes = [
-  { id: 'landing', label: 'Landing Page', subtitle: 'Gezielte Conversion', icon: Monitor },
-  { id: 'unternehmen', label: 'Unternehmenswebsite', subtitle: 'Professioneller Auftritt', icon: Globe },
-  { id: 'shop', label: 'Online Shop', subtitle: 'Produkte verkaufen', icon: ShoppingBag },
-  { id: 'redesign', label: 'Redesign', subtitle: 'Bestehende Site auffrischen', icon: RefreshCw },
-  { id: 'portfolio', label: 'Portfolio', subtitle: 'Arbeiten präsentieren', icon: Briefcase },
-  { id: 'webapp', label: 'Web-App', subtitle: 'Individuelle Software', icon: Smartphone },
+const pakete = [
+  { id: 'Starter', label: 'Starter', subtitle: 'ab 499 €/Monat · Für lokale Unternehmen & Einsteiger', icon: Zap },
+  { id: 'Growth', label: 'Growth', subtitle: 'ab 999 €/Monat · Für wachsende Online-Shops & Dienstleister', icon: TrendingUp },
+  { id: 'Enterprise', label: 'Enterprise', subtitle: 'Individuell · Für große Portale, Shops & Konzerne', icon: Award },
 ]
 
-const branchen = [
-  { id: 'handwerk', label: 'Handwerk', icon: Hammer },
-  { id: 'gastro', label: 'Gastronomie', icon: UtensilsCrossed },
-  { id: 'gesundheit', label: 'Gesundheit & Fitness', icon: Heart },
-  { id: 'immobilien', label: 'Immobilien', icon: Home },
-  { id: 'ecommerce', label: 'E-Commerce', icon: ShoppingCart },
-  { id: 'beratung', label: 'Beratung & Coaching', icon: MessageSquare },
-  { id: 'agentur', label: 'Agentur & Kreativ', icon: Palette },
-  { id: 'tech', label: 'Tech & SaaS', icon: Cpu },
-  { id: 'sonstiges', label: 'Sonstiges', icon: HelpCircle },
+const ziele = [
+  { id: 'Mehr organischer Traffic', label: 'Mehr organischer Traffic', subtitle: 'Mehr Besucher aus der Google-Suche', icon: TrendingUp },
+  { id: 'Bessere Rankings', label: 'Bessere Rankings', subtitle: 'Top-Positionen für Ihre Keywords', icon: Star },
+  { id: 'Lokale Sichtbarkeit', label: 'Lokale Sichtbarkeit', subtitle: 'Gefunden werden in Ihrer Region', icon: MapPin },
+  { id: 'Online-Shop stärken', label: 'Online-Shop stärken', subtitle: 'Mehr Umsatz durch organischen Traffic', icon: ShoppingCart },
 ]
-
-const designStyles = [
-  { id: 'minimalistisch', label: 'Minimalistisch', subtitle: 'Klar, aufgeräumt, zeitlos', icon: Minimize2 },
-  { id: 'modern', label: 'Modern & Bold', subtitle: 'Mutig, auffällig, direkt', icon: Zap },
-  { id: 'elegant', label: 'Elegant & Premium', subtitle: 'Hochwertig, verfeinert', icon: Crown },
-  { id: 'kreativ', label: 'Kreativ & Verspielt', subtitle: 'Bunt, dynamisch, einzigartig', icon: Sparkles },
-]
-
-const budgetSteps: Record<'einmalig' | 'monatlich', string[]> = {
-  einmalig: ['ab 1.499 €', 'ab 2.500 €', 'ab 4.000 €', 'ab 6.000 €', 'ab 10.000 €'],
-  monatlich: ['99 €/Monat', '149 €/Monat', '199 €/Monat', '299 €/Monat'],
-}
-
-const budgetHints: Record<'einmalig' | 'monatlich', string[]> = {
-  einmalig: [
-    'Einstieg ab 1.499 € – ideal für Landing Pages & kleine Sites',
-    'Perfekt für eine mehrseitige Unternehmenswebsite',
-    'Für umfangreiche Sites mit individuellen Features',
-    'Für komplexe Projekte mit höchsten Ansprüchen',
-    'Enterprise-Lösung mit vollem Funktionsumfang',
-  ],
-  monatlich: [
-    'Einstieg ins Webseiten-Abo – alles inklusive ab 99 €/Monat',
-    'Mehr Leistung & Support, maximale Flexibilität',
-    'Professionelles Rundum-Paket für wachsende Unternehmen',
-    'Premium-Abo mit persönlichem Ansprechpartner',
-  ],
-}
-
 
 // ─── Shared card style ────────────────────────────────────────────────────────
 
@@ -144,14 +105,20 @@ function SelectCard({
 function Step1({ data, onChange }: { data: FormData; onChange: (field: string, val: string) => void }) {
   return (
     <div>
-      <h3 className="text-xl font-display font-bold text-white mb-1">Welchen Website-Typ benötigen Sie?</h3>
-      <p className="text-slate-400 text-sm mb-6">Wählen Sie die passende Kategorie aus.</p>
-      <div className="grid grid-cols-2 gap-3">
-        {websiteTypes.map(({ id, label, subtitle, icon: Icon }) => (
-          <SelectCard key={id} selected={data.websiteType === id} onClick={() => onChange('websiteType', id)}>
-            <Icon className={`w-5 h-5 mb-2 ${data.websiteType === id ? 'text-emerald-400' : 'text-slate-400'}`} />
-            <p className={`font-semibold text-sm ${data.websiteType === id ? 'text-white' : 'text-slate-200'}`}>{label}</p>
-            <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>
+      <h3 className="text-xl font-display font-bold text-white mb-1">Welches SEO-Paket interessiert Sie?</h3>
+      <p className="text-slate-400 text-sm mb-6">Wählen Sie das passende Paket für Ihr Unternehmen.</p>
+      <div className="flex flex-col gap-3">
+        {pakete.map(({ id, label, subtitle, icon: Icon }) => (
+          <SelectCard key={id} selected={data.paket === id} onClick={() => onChange('paket', id)}>
+            <div className="flex items-center gap-3">
+              <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${data.paket === id ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-400'}`}>
+                <Icon className="w-5 h-5" />
+              </div>
+              <div>
+                <p className={`font-semibold text-sm ${data.paket === id ? 'text-white' : 'text-slate-200'}`}>{label}</p>
+                <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>
+              </div>
+            </div>
           </SelectCard>
         ))}
       </div>
@@ -162,30 +129,13 @@ function Step1({ data, onChange }: { data: FormData; onChange: (field: string, v
 function Step2({ data, onChange }: { data: FormData; onChange: (field: string, val: string) => void }) {
   return (
     <div>
-      <h3 className="text-xl font-display font-bold text-white mb-1">In welcher Branche sind Sie tätig?</h3>
-      <p className="text-slate-400 text-sm mb-6">Das hilft uns, Ihren Entwurf zu personalisieren.</p>
-      <div className="grid grid-cols-3 gap-3">
-        {branchen.map(({ id, label, icon: Icon }) => (
-          <SelectCard key={id} selected={data.branche === id} onClick={() => onChange('branche', id)} className="p-3">
-            <Icon className={`w-5 h-5 mb-2 ${data.branche === id ? 'text-emerald-400' : 'text-slate-400'}`} />
-            <p className={`font-semibold text-xs leading-tight ${data.branche === id ? 'text-white' : 'text-slate-200'}`}>{label}</p>
-          </SelectCard>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function Step3({ data, onChange }: { data: FormData; onChange: (field: string, val: string) => void }) {
-  return (
-    <div>
-      <h3 className="text-xl font-display font-bold text-white mb-1">Welcher Design-Stil passt zu Ihnen?</h3>
-      <p className="text-slate-400 text-sm mb-6">Wählen Sie die Richtung, die Ihr Unternehmen am besten repräsentiert.</p>
-      <div className="grid grid-cols-2 gap-4">
-        {designStyles.map(({ id, label, subtitle, icon: Icon }) => (
-          <SelectCard key={id} selected={data.designStyle === id} onClick={() => onChange('designStyle', id)}>
-            <Icon className={`w-5 h-5 mb-2 ${data.designStyle === id ? 'text-emerald-400' : 'text-slate-400'}`} />
-            <p className={`font-semibold text-sm ${data.designStyle === id ? 'text-white' : 'text-slate-200'}`}>{label}</p>
+      <h3 className="text-xl font-display font-bold text-white mb-1">Was ist Ihr Hauptziel?</h3>
+      <p className="text-slate-400 text-sm mb-6">Damit wir die richtige Strategie für Sie entwickeln können.</p>
+      <div className="grid grid-cols-2 gap-3">
+        {ziele.map(({ id, label, subtitle, icon: Icon }) => (
+          <SelectCard key={id} selected={data.ziel === id} onClick={() => onChange('ziel', id)}>
+            <Icon className={`w-5 h-5 mb-2 ${data.ziel === id ? 'text-emerald-400' : 'text-slate-400'}`} />
+            <p className={`font-semibold text-sm ${data.ziel === id ? 'text-white' : 'text-slate-200'}`}>{label}</p>
             <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>
           </SelectCard>
         ))}
@@ -194,99 +144,89 @@ function Step3({ data, onChange }: { data: FormData; onChange: (field: string, v
   )
 }
 
-function Step4({ data, onChange }: { data: FormData; onChange: (field: string, val: unknown) => void }) {
-  const models: { id: 'einmalig' | 'monatlich'; label: string; badge?: string }[] = [
-    { id: 'einmalig', label: 'Einmalig' },
-    { id: 'monatlich', label: 'Webseiten-Abo', badge: 'NEU' },
-  ]
-  const steps = budgetSteps[data.paymentModel]
-  const hints = budgetHints[data.paymentModel]
-  const idx = Math.min(data.budgetIndex, steps.length - 1)
+function Step3({
+  data,
+  onChange,
+  onNext,
+}: {
+  data: FormData
+  onChange: (field: string, val: string) => void
+  onNext: () => void
+}) {
+  const canNext = data.websiteUrl.trim() && data.hatteSeo !== ''
 
   return (
     <div>
-      <h3 className="text-xl font-display font-bold text-white mb-1">Budget & Zahlungsart</h3>
-      <p className="text-slate-400 text-sm mb-6">Wählen Sie Ihr bevorzugtes Modell und Budget.</p>
+      <h3 className="text-xl font-display font-bold text-white mb-1">Ihre Website</h3>
+      <p className="text-slate-400 text-sm mb-6">Damit wir Ihre Ausgangssituation einschätzen können.</p>
 
-      {/* Payment model toggle */}
-      <div className="flex bg-slate-900 border border-slate-800 rounded-2xl p-1 gap-1 mb-6">
-        {models.map(({ id, label, badge }) => (
-          <button
-            key={id}
-            type="button"
-            onClick={() => { onChange('paymentModel', id); onChange('budgetIndex', 0) }}
-            className={`relative flex-1 py-2 px-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
-              data.paymentModel === id
-                ? 'bg-emerald-500 text-slate-950 shadow-sm'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            {label}
-            {badge && (
-              <span className={`ml-1.5 inline-block text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
-                data.paymentModel === id ? 'bg-slate-950/20 text-slate-950' : 'bg-emerald-500/20 text-emerald-400'
-              }`}>
-                {badge}
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
-
-      {/* Slider */}
-      <div className="mb-4">
-        <div className="flex justify-between items-end mb-3">
-          <span className="text-slate-400 text-sm">Budget</span>
-          <span className="text-2xl font-display font-bold text-emerald-400">{steps[idx]}</span>
+      <div className="space-y-5">
+        <div>
+          <label className="block text-xs font-medium text-slate-400 mb-1.5">
+            <Globe className="w-3.5 h-3.5 inline mr-1.5 align-middle" />
+            Website-URL *
+          </label>
+          <input
+            type="url"
+            value={data.websiteUrl}
+            onChange={(e) => onChange('websiteUrl', e.target.value)}
+            placeholder="https://ihre-website.de"
+            className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/40 transition-colors"
+          />
         </div>
-        <input
-          type="range"
-          min={0}
-          max={steps.length - 1}
-          step={1}
-          value={idx}
-          onChange={(e) => onChange('budgetIndex', Number(e.target.value))}
-          className="w-full h-2 rounded-full appearance-none cursor-pointer accent-emerald-500 bg-slate-800"
-          style={{
-            background: `linear-gradient(to right, #10b981 0%, #10b981 ${(idx / (steps.length - 1)) * 100}%, #1e293b ${(idx / (steps.length - 1)) * 100}%, #1e293b 100%)`,
-          }}
-        />
-        {/* Step labels */}
-        <div className="flex justify-between mt-2">
-          {steps.map((s, i) => (
-            <span
-              key={i}
-              className={`text-[10px] ${i === idx ? 'text-emerald-400 font-semibold' : 'text-slate-600'}`}
-            >
-              {s.split(' ')[0]}
-            </span>
-          ))}
-        </div>
-      </div>
 
-      {/* Hint */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-400 italic">
-        💡 {hints[idx]}
+        <div>
+          <label className="block text-xs font-medium text-slate-400 mb-3">Haben Sie bisher SEO gemacht? *</label>
+          <div className="flex gap-3">
+            {(['ja', 'nein'] as const).map((val) => (
+              <button
+                key={val}
+                type="button"
+                onClick={() => onChange('hatteSeo', val)}
+                className={`flex-1 py-3 rounded-xl border text-sm font-semibold transition-all duration-200 ${
+                  data.hatteSeo === val
+                    ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-[0_0_0_1px_rgb(16,185,129,0.4)]'
+                    : 'border-slate-800 bg-slate-900 text-slate-300 hover:border-slate-600'
+                }`}
+              >
+                {val === 'ja' ? 'Ja' : 'Nein'}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={onNext}
+          disabled={!canNext}
+          className={`w-full flex items-center justify-center gap-2 py-4 rounded-full font-bold text-base transition-all duration-300 ${
+            canNext
+              ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400 hover:scale-[1.02] shadow-[0_8px_30px_rgba(16,185,129,0.3)]'
+              : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+          }`}
+        >
+          Weiter
+          <ArrowRight className="w-4 h-4" />
+        </button>
       </div>
     </div>
   )
 }
 
-function Step5({
+function Step4({
   data,
   onChange,
-  onSubmit,
+  onNext,
 }: {
   data: FormData
   onChange: (field: string, val: string) => void
-  onSubmit: () => void
+  onNext: () => void
 }) {
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)
-  const canSubmit = data.vorname.trim() && data.nachname.trim() && emailValid && data.telefon.trim()
+  const canNext = data.vorname.trim() && data.nachname.trim() && emailValid && data.telefon.trim()
 
   return (
     <div>
-      {/* Trust badges */}
       <div className="flex flex-wrap gap-2 mb-6">
         {['✓ Kostenlos & unverbindlich', '✓ Kein Spam', '✓ Antwort in 24h'].map((b) => (
           <span key={b} className="text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full px-3 py-1">
@@ -296,7 +236,7 @@ function Step5({
       </div>
 
       <h3 className="text-xl font-display font-bold text-white mb-1">Ihre Kontaktdaten</h3>
-      <p className="text-slate-400 text-sm mb-6">Damit wir Ihnen Ihren kostenlosen Entwurf zusenden können.</p>
+      <p className="text-slate-400 text-sm mb-6">Damit wir Ihr individuelles SEO-Angebot zusenden können.</p>
 
       <div className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
@@ -353,15 +293,15 @@ function Step5({
 
         <button
           type="button"
-          onClick={onSubmit}
-          disabled={!canSubmit}
+          onClick={onNext}
+          disabled={!canNext}
           className={`w-full flex items-center justify-center gap-2 py-4 rounded-full font-bold text-base transition-all duration-300 ${
-            canSubmit
+            canNext
               ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400 hover:scale-[1.02] shadow-[0_8px_30px_rgba(16,185,129,0.3)]'
               : 'bg-slate-800 text-slate-500 cursor-not-allowed'
           }`}
         >
-          Kostenlosen Entwurf erhalten
+          Weiter
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
@@ -370,34 +310,27 @@ function Step5({
 }
 
 function buildWhatsAppMessage(data: FormData): string {
-  const websiteLabel = websiteTypes.find((w) => w.id === data.websiteType)?.label ?? data.websiteType
-  const brancheLabel = branchen.find((b) => b.id === data.branche)?.label ?? data.branche
-  const styleLabel = designStyles.find((s) => s.id === data.designStyle)?.label ?? data.designStyle
-  const budgetList = budgetSteps[data.paymentModel]
-  const budgetLabel = budgetList[Math.min(data.budgetIndex, budgetList.length - 1)]
-  const paymentLabel = data.paymentModel === 'einmalig' ? 'Einmalig' : 'Webseiten-Abo'
-
   const ico = { list: '\u{1F4CB}', phone: '\u{1F4DE}', rocket: '\u{1F680}' }
 
   return [
-    'Hallo! Ich habe Ihr Formular ausgef\u00fcllt und interessiere mich f\u00fcr eine Website.',
+    'Hallo Rankprofit! Ich interessiere mich f\u00fcr eine SEO-Zusammenarbeit.',
     '',
     `${ico.list} Meine Angaben:`,
-    `\u2022 Website-Typ: ${websiteLabel}`,
-    `\u2022 Branche: ${brancheLabel}`,
-    `\u2022 Design-Stil: ${styleLabel}`,
-    `\u2022 Budget: ${budgetLabel} (${paymentLabel})`,
+    `\u2022 SEO-Paket: ${data.paket}`,
+    `\u2022 Hauptziel: ${data.ziel}`,
+    `\u2022 Website: ${data.websiteUrl}`,
+    `\u2022 Bisherige SEO-Erfahrung: ${data.hatteSeo === 'ja' ? 'Ja' : 'Nein'}`,
     '',
     `${ico.phone} Meine Kontaktdaten:`,
     `\u2022 Name: ${data.vorname} ${data.nachname}`,
     `\u2022 E-Mail: ${data.email}`,
     `\u2022 Telefon: ${data.telefon}`,
     '',
-    `Ich freue mich auf meinen kostenlosen Entwurf! ${ico.rocket}`,
+    `Ich freue mich auf Ihre R\u00fcckmeldung! ${ico.rocket}`,
   ].join('\n')
 }
 
-function Step6({
+function Step5({
   data,
   onChange,
   onSubmit,
@@ -421,7 +354,7 @@ function Step6({
 
   return (
     <div>
-      <h3 className="text-xl font-display font-bold text-white mb-1">Wo soll der Entwurf hinkommen?</h3>
+      <h3 className="text-xl font-display font-bold text-white mb-1">Wie sollen wir Sie kontaktieren?</h3>
       <p className="text-slate-400 text-sm mb-6">Wählen Sie Ihren bevorzugten Kanal – wir melden uns schnellstmöglich.</p>
 
       <div className="grid grid-cols-2 gap-4 mb-8">
@@ -497,24 +430,15 @@ function Step6({
   )
 }
 
-function Step7({ data, onClose }: { data: FormData; onClose: () => void }) {
-  const websiteLabel = websiteTypes.find((w) => w.id === data.websiteType)?.label ?? data.websiteType
-  const brancheLabel = branchen.find((b) => b.id === data.branche)?.label ?? data.branche
-  const styleLabel = designStyles.find((s) => s.id === data.designStyle)?.label ?? data.designStyle
-  const budgetStepList = budgetSteps[data.paymentModel]
-  const budgetLabel = budgetStepList[Math.min(data.budgetIndex, budgetStepList.length - 1)]
-  const paymentLabel = { einmalig: 'Einmalig', monatlich: 'Webseiten-Abo' }[data.paymentModel]
-
-  const kanalLabel = data.terminChoice === 'whatsapp' ? 'WhatsApp' : 'E-Mail'
-
+function Step6({ data, onClose }: { data: FormData; onClose: () => void }) {
   const summaryItems = [
-    { label: 'Website-Typ', value: websiteLabel },
-    { label: 'Branche', value: brancheLabel },
-    { label: 'Design-Stil', value: styleLabel },
-    { label: 'Budget', value: `${budgetLabel} (${paymentLabel})` },
+    { label: 'SEO-Paket', value: data.paket },
+    { label: 'Hauptziel', value: data.ziel },
+    { label: 'Website', value: data.websiteUrl },
+    { label: 'Bisherige SEO', value: data.hatteSeo === 'ja' ? 'Ja' : 'Nein' },
     { label: 'E-Mail', value: data.email },
     { label: 'Telefon', value: data.telefon },
-    { label: 'Zustellung', value: kanalLabel },
+    { label: 'Kontaktweg', value: data.terminChoice === 'whatsapp' ? 'WhatsApp' : 'E-Mail' },
   ]
 
   return (
@@ -553,45 +477,41 @@ function Step7({ data, onClose }: { data: FormData; onClose: () => void }) {
 
 // ─── Main modal ───────────────────────────────────────────────────────────────
 
-const TOTAL_STEPS = 7
+const TOTAL_STEPS = 6
 
-const defaultData: FormData = {
-  websiteType: '',
-  branche: '',
-  designStyle: '',
-  paymentModel: 'einmalig',
-  budgetIndex: 0,
-  vorname: '',
-  nachname: '',
-  email: '',
-  telefon: '',
-  terminChoice: 'whatsapp',
-}
-
-export function MultiStepFormModal() {
-  const { isOpen, closeModal } = useFormModal()
+export function SEOAnfrageModal() {
+  const { isOpen, closeModal, modalType, selectedPackage } = useFormModal()
+  const isVisible = isOpen && modalType === 'seo'
   const [step, setStep] = useState(1)
   const [data, setData] = useState<FormData>(defaultData)
   const scrollRef = useRef<HTMLDivElement>(null)
 
+  // Pre-select package and skip step 1 when package is passed
+  useEffect(() => {
+    if (isVisible && selectedPackage) {
+      setData((prev) => ({ ...prev, paket: selectedPackage }))
+      setStep(2)
+    }
+  }, [isVisible, selectedPackage])
+
   // Lock body scroll
   useEffect(() => {
-    if (isOpen) {
+    if (isVisible) {
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = ''
     }
     return () => { document.body.style.overflow = '' }
-  }, [isOpen])
+  }, [isVisible])
 
-  // Esc key
+  // ESC key
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen && step < TOTAL_STEPS) handleClose()
+      if (e.key === 'Escape' && isVisible && step < TOTAL_STEPS) handleClose()
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [isOpen, step])
+  }, [isVisible, step])
 
   // Scroll to top on step change
   useEffect(() => {
@@ -606,7 +526,7 @@ export function MultiStepFormModal() {
     }, 300)
   }
 
-  function handleChange(field: string, val: unknown) {
+  function handleChange(field: string, val: string) {
     setData((prev) => ({ ...prev, [field]: val }))
   }
 
@@ -619,11 +539,11 @@ export function MultiStepFormModal() {
 
   return (
     <AnimatePresence>
-      {isOpen && (
+      {isVisible && (
         <>
           {/* Backdrop */}
           <motion.div
-            key="backdrop"
+            key="seo-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -635,7 +555,7 @@ export function MultiStepFormModal() {
           {/* Modal */}
           <div className="fixed inset-0 z-[201] flex items-end sm:items-center justify-center pointer-events-none px-0 sm:px-4">
             <motion.div
-              key="modal"
+              key="seo-modal"
               initial={{ opacity: 0, y: 60, scale: 0.97 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 60, scale: 0.97 }}
@@ -686,44 +606,22 @@ export function MultiStepFormModal() {
                     transition={{ duration: 0.22, ease: 'easeInOut' }}
                   >
                     {step === 1 && (
-                      <Step1
-                        data={data}
-                        onChange={(f, v) => autoAdvance(f, v, 2)}
-                      />
+                      <Step1 data={data} onChange={(f, v) => autoAdvance(f, v, 2)} />
                     )}
                     {step === 2 && (
-                      <Step2
-                        data={data}
-                        onChange={(f, v) => autoAdvance(f, v, 3)}
-                      />
+                      <Step2 data={data} onChange={(f, v) => autoAdvance(f, v, 3)} />
                     )}
                     {step === 3 && (
-                      <Step3
-                        data={data}
-                        onChange={(f, v) => autoAdvance(f, v, 4)}
-                      />
+                      <Step3 data={data} onChange={handleChange} onNext={() => setStep(4)} />
                     )}
                     {step === 4 && (
-                      <Step4 data={data} onChange={handleChange} />
-                    )}
-                    {step === 4 && (
-                      <button
-                        type="button"
-                        onClick={() => setStep(5)}
-                        className="mt-6 w-full flex items-center justify-center gap-2 py-4 rounded-full font-bold text-base bg-emerald-500 text-slate-950 hover:bg-emerald-400 hover:scale-[1.02] transition-all duration-300 shadow-[0_8px_30px_rgba(16,185,129,0.3)]"
-                      >
-                        Weiter
-                        <ArrowRight className="w-4 h-4" />
-                      </button>
+                      <Step4 data={data} onChange={handleChange} onNext={() => setStep(5)} />
                     )}
                     {step === 5 && (
                       <Step5 data={data} onChange={handleChange} onSubmit={() => setStep(6)} />
                     )}
                     {step === 6 && (
-                      <Step6 data={data} onChange={handleChange} onSubmit={() => setStep(7)} />
-                    )}
-                    {step === 7 && (
-                      <Step7 data={data} onClose={handleClose} />
+                      <Step6 data={data} onClose={handleClose} />
                     )}
                   </motion.div>
                 </AnimatePresence>
